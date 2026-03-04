@@ -21,7 +21,7 @@
     </div>
     @if (canManage()) {
       <button (click)="showCreateModal.set(true)" 
-              class="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg px-6 py-3 font-medium transition-all duration-200 shadow-sm hover:shadow-md">
+              class="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg px-6 py-3 font-medium transition-all duration-200 shadow-sm hover:shadow-md">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
@@ -38,7 +38,7 @@
     <input type="text" 
            [(ngModel)]="searchTerm" 
            placeholder="Search subjects by name or code..."
-           class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200">
+           class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200">
   </div>
 
   <!-- Subjects Grid -->
@@ -49,7 +49,7 @@
           <div class="flex items-start justify-between mb-4">
             <div class="flex-1">
               <h3 class="text-lg font-bold text-slate-800 mb-1">{{subject.subject_name}}</h3>
-              <p class="text-sm font-medium text-indigo-600">{{subject.subject_code}}</p>
+              <p class="text-sm font-medium text-orange-600">{{subject.subject_code}}</p>
             </div>
             @if (canManageSubject(subject)) {
               <button (click)="deleteSubject(subject.subject_id)" 
@@ -111,7 +111,7 @@
         </p>
         @if (canManage() && !searchTerm) {
           <button (click)="showCreateModal.set(true)"
-                  class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg px-6 py-3 font-medium transition-all duration-200">
+                  class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg px-6 py-3 font-medium transition-all duration-200">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
@@ -146,7 +146,7 @@
                    name="name" 
                    required
                    placeholder="e.g., Mathematics"
-                   class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                   class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all">
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Subject Code</label>
@@ -155,7 +155,7 @@
                    name="code" 
                    required
                    placeholder="e.g., MATH101"
-                   class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                   class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all">
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Grade Level</label>
@@ -164,7 +164,7 @@
                    name="grade" 
                    required
                    placeholder="e.g., 10"
-                   class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                   class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all">
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Section</label>
@@ -173,7 +173,7 @@
                    name="section" 
                    required
                    placeholder="e.g., A"
-                   class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                   class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all">
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Schedule</label>
@@ -182,13 +182,13 @@
                    name="schedule" 
                    required
                    placeholder="e.g., Mon/Wed/Fri 9:00-10:00 AM"
-                   class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                   class="w-full border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all">
           </div>
         </div>
         
         <div class="flex gap-3 mt-6">
           <button type="submit" 
-                  class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg px-4 py-2 font-medium transition-all duration-200">
+                  class="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg px-4 py-2 font-medium transition-all duration-200">
             Create Subject
           </button>
           <button type="button" 

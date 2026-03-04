@@ -1,7 +1,7 @@
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4">
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 p-4">
   <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md animate-fade-in">
     <div class="text-center mb-8">
-      <div class="w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+      <div class="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
         <lucide-icon [img]="CheckCircle2" [size]="40" class="text-white"></lucide-icon>
       </div>
       <h1 class="text-3xl font-bold text-slate-800 mb-2">WELCOME TO SAMS</h1>
@@ -23,7 +23,7 @@
                name="email" 
                required
                placeholder="Enter your email"
-               class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+               class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all">
       </div>
 
       <div>
@@ -33,12 +33,12 @@
                name="password" 
                required
                placeholder="Enter your password"
-               class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+               class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all">
       </div>
 
       <button type="submit" 
               [disabled]="loading()"
-              class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-3 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+              class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white py-3 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
         @if (loading()) {
           <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
           <span>Signing in...</span>
@@ -52,9 +52,9 @@
     <div class="mt-8 pt-6 border-t border-slate-200">
       <p class="text-sm font-semibold text-slate-700 text-center mb-3">Master Admin Account</p>
       <div class="space-y-2 text-sm">
-        <div class="flex items-center justify-between p-3 bg-indigo-50 rounded-lg border border-indigo-200">
-          <span class="font-medium text-indigo-700">Admin</span>
-          <span class="text-indigo-600">admin@school.com</span>
+        <div class="flex items-center justify-between p-3 bg-orange-50 rounded-lg border border-orange-200">
+          <span class="font-medium text-orange-700">Admin</span>
+          <span class="text-orange-600">admin@school.com</span>
         </div>
       </div>
       <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">

@@ -1,4 +1,4 @@
-﻿/* Subject Detail Component Styles - Revolutionary Design */
+/* Subject Detail Component Styles - Revolutionary Design */
 
 .space-y-6 {
   display: flex;
@@ -24,10 +24,10 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
   border-radius: 1rem;
   padding: 2rem;
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
   position: relative;
   overflow: hidden;
 }
@@ -80,7 +80,7 @@
 .take-attendance-button {
   padding: 0.75rem 1.5rem;
   background: white;
-  color: #667eea;
+  color: #f59e0b;
   border: none;
   border-radius: 0.75rem;
   font-weight: 600;
@@ -133,14 +133,14 @@
 }
 
 .tab-button:hover {
-  color: #667eea;
-  background: rgba(102, 126, 234, 0.1);
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
 }
 
 .tab-button.active {
   color: white;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
 }
 
 .tab-icon-wrapper {
@@ -176,7 +176,7 @@
   content: '';
   width: 4px;
   height: 24px;
-  background: linear-gradient(to bottom, #667eea, #764ba2);
+  background: linear-gradient(to bottom, #f59e0b, #ea580c);
   border-radius: 2px;
 }
 
@@ -202,15 +202,15 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background: linear-gradient(to bottom, #667eea, #764ba2);
+  background: linear-gradient(to bottom, #f59e0b, #ea580c);
   transform: scaleY(0);
   transition: transform 0.3s ease;
 }
 
 .list-item:hover {
   transform: translateX(8px);
-  border-color: #667eea;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+  border-color: #f59e0b;
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.15);
   background: white;
 }
 
@@ -229,13 +229,13 @@
   content: '';
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
 }
 
 .student-name {
@@ -256,7 +256,7 @@
 }
 
 .student-details::before {
-  content: '📅';
+  content: '??';
   font-size: 0.75rem;
 }
 
@@ -273,7 +273,7 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
   color: white;
   border: none;
   border-radius: 0.75rem;
@@ -282,7 +282,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
   position: relative;
   overflow: hidden;
 }
@@ -307,7 +307,7 @@
 
 .enroll-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+  box-shadow: 0 6px 25px rgba(245, 158, 11, 0.5);
 }
 
 .enroll-button:active {
@@ -499,7 +499,7 @@
   color: white;
   margin: 0;
   padding: 1.75rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
   position: relative;
   overflow: hidden;
 }
@@ -542,16 +542,16 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background: linear-gradient(to bottom, #667eea, #764ba2);
+  background: linear-gradient(to bottom, #f59e0b, #ea580c);
   transform: scaleY(0);
   transition: transform 0.3s ease;
 }
 
 .student-list-item:hover {
   background: white;
-  border-color: #667eea;
+  border-color: #f59e0b;
   transform: translateX(4px);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
 }
 
 .student-list-item:hover::before {

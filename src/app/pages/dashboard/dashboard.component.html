@@ -44,7 +44,7 @@
           <p class="text-slate-500 mb-6">Start taking attendance to see records here</p>
           @if (canTakeAttendance()) {
             <a routerLink="/take-attendance" 
-               class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg px-6 py-3 font-medium transition-all duration-200">
+               class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg px-6 py-3 font-medium transition-all duration-200">
               Take Attendance
             </a>
           }
@@ -59,8 +59,8 @@
         <div class="space-y-3">
           @if (canTakeAttendance()) {
             <a routerLink="/take-attendance"
-               class="flex items-center gap-4 p-4 border border-slate-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-300 transition-all duration-200 group">
-              <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+               class="flex items-center gap-4 p-4 border border-slate-200 rounded-lg hover:bg-amber-50 hover:border-amber-300 transition-all duration-200 group">
+              <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
                 <lucide-icon [img]="ClipboardList" [size]="24"></lucide-icon>
               </div>
               <div class="flex-1">
@@ -70,8 +70,8 @@
             </a>
           }
           <a routerLink="/subjects"
-             class="flex items-center gap-4 p-4 border border-slate-200 rounded-lg hover:bg-purple-50 hover:border-purple-300 transition-all duration-200 group">
-            <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition-colors">
+             class="flex items-center gap-4 p-4 border border-slate-200 rounded-lg hover:bg-orange-50 hover:border-orange-300 transition-all duration-200 group">
+            <div class="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center group-hover:bg-orange-600 group-hover:text-white transition-colors">
               <lucide-icon [img]="BookOpen" [size]="24"></lucide-icon>
             </div>
             <div class="flex-1">
@@ -90,8 +90,8 @@
             </div>
           </a>
           <a routerLink="/calendar"
-             class="flex items-center gap-4 p-4 border border-slate-200 rounded-lg hover:bg-amber-50 hover:border-amber-300 transition-all duration-200 group">
-            <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
+             class="flex items-center gap-4 p-4 border border-slate-200 rounded-lg hover:bg-yellow-50 hover:border-yellow-300 transition-all duration-200 group">
+            <div class="w-12 h-12 rounded-xl bg-yellow-100 text-yellow-600 flex items-center justify-center group-hover:bg-yellow-600 group-hover:text-white transition-colors">
               <lucide-icon [img]="CalendarIcon" [size]="24"></lucide-icon>
             </div>
             <div class="flex-1">

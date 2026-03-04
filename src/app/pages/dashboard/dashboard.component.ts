@@ -72,15 +72,15 @@ export class DashboardComponent {
         label: 'Total Students', 
         value: students.length, 
         icon: 'Users', 
-        bgColor: 'bg-indigo-100',
-        textColor: 'text-indigo-600'
+        bgColor: 'bg-amber-100',
+        textColor: 'text-amber-600'
       },
       { 
         label: 'Total Subjects', 
         value: subjects.length, 
         icon: 'BookOpen', 
-        bgColor: 'bg-purple-100',
-        textColor: 'text-purple-600'
+        bgColor: 'bg-orange-100',
+        textColor: 'text-orange-600'
       },
       { 
         label: 'Attendance Rate', 
