@@ -8,7 +8,16 @@ import { firstValueFrom } from 'rxjs';
 })
 export class DataService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = this.getApiUrl();
+  
+  private getApiUrl(): string {
+    // Check if we're in production/Vercel environment
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+      // Use environment variable or construct from current domain
+      return `${window.location.protocol}//${window.location.hostname}:3000`;
+    }
+    return 'http://localhost:3000';
+  }
 
   students = signal<Student[]>([]);
   subjects = signal<Subject[]>([]);

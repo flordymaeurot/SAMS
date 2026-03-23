@@ -5,10 +5,14 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:ssr": "ng build --configuration production && npm run build:server",
+    "build:server": "tsc --project tsconfig.server.json",
+    "serve:ssr": "node dist/student-attendance-system/server/server.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:student-attendance-system": "node dist/student-attendance-system/server/server.mjs",
-    "json-server": "json-server --watch db.json --port 3000"
+    "json-server": "json-server --watch db.json --port 3000",
+    "start:prod": "npm run build:ssr && npm run serve:ssr"
   },
   "prettier": {
     "printWidth": 100,

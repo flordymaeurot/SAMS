@@ -1,0 +1,12 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/student-attendance-system/browser",
+  "framework": "other",
+  "nodejs": "18.x",
+  "rewrites": [
+    {
+      "source": "/:path((?!_next/static|_next/image|favicon.ico).*)",
+      "destination": "/api/render"
+    }
+  ]
+}
