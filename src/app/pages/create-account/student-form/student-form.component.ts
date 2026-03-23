@@ -32,7 +32,6 @@ export class StudentFormComponent {
     middle_name: '',
     last_name: '',
     email: '',
-    phone: '',
     grade_level: '',
     section: ''
   };
@@ -46,31 +45,45 @@ export class StudentFormComponent {
   };
 
   onSubmit() {
-    if (!this.isFormValid()) return;
+    if (!this.isFormValid()) {
+      console.warn('Form is not valid');
+      return;
+    }
     
     this.loading.set(true);
     
-    // Get current instructor - only check if user is an instructor
+    // Get current user
     const user = this.authService.currentUser();
     let instructorId = '';
     
+    console.log('Current user:', user);
+    console.log('User role:', user?.role);
+    
     if (user?.role === 'instructor') {
-      const instructor = this.dataService.instructors().find(i => i.user_id === user.user_id);
+      // For instructors, try to find their profile, but allow creation without it
+      const instructors = this.dataService.instructors();
+      console.log('Available instructors:', instructors);
+      console.log('Looking for instructor with user_id:', user.user_id);
       
-      if (!instructor) {
-        Swal.fire({
-          title: 'Error!',
-          text: 'Instructor profile not found',
-          icon: 'error'
-        });
-        this.loading.set(false);
-        return;
+      const instructor = instructors.find(i => i.user_id === user.user_id);
+      console.log('Found instructor:', instructor);
+      
+      if (instructor) {
+        instructorId = instructor.instructor_id;
+      } else {
+        // If no profile found, use the user's ID as instructor ID
+        console.warn('Instructor profile not found, using user_id as instructor_id');
+        instructorId = user.user_id || 'INSTRUCTOR-' + Date.now();
       }
-      instructorId = instructor.instructor_id;
     } else if (user?.role === 'admin') {
-      // Admin creating student - use a default or let it be empty
+      // Admin creating student - use a default
       instructorId = 'ADMIN-CREATED';
+    } else {
+      console.warn('User is neither instructor nor admin');
+      instructorId = 'UNKNOWN';
     }
+    
+    console.log('Using instructor ID:', instructorId);
     
     // Simulate API call
     setTimeout(() => {
@@ -114,6 +127,7 @@ export class StudentFormComponent {
         created_at: new Date().toISOString()
       };
       
+      console.log('Emitting student and parent data:', { student, parent });
       this.submitForm.emit({ student, parent });
       this.resetForm();
       this.loading.set(false);
@@ -142,7 +156,6 @@ export class StudentFormComponent {
       middle_name: '',
       last_name: '',
       email: '',
-      phone: '',
       grade_level: '',
       section: ''
     };

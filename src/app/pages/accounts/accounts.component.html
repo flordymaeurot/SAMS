@@ -149,7 +149,8 @@
                 <label>First Name</label>
                 <input 
                   type="text" 
-                  [(ngModel)]="editForm().first_name"
+                  [value]="editForm().first_name"
+                  (input)="onFormFieldChange('first_name', $event)"
                   name="first_name"
                   required
                 />
@@ -159,7 +160,8 @@
                 <label>Middle Name</label>
                 <input 
                   type="text" 
-                  [(ngModel)]="editForm().middle_name"
+                  [value]="editForm().middle_name"
+                  (input)="onFormFieldChange('middle_name', $event)"
                   name="middle_name"
                 />
               </div>
@@ -168,7 +170,8 @@
                 <label>Last Name</label>
                 <input 
                   type="text" 
-                  [(ngModel)]="editForm().last_name"
+                  [value]="editForm().last_name"
+                  (input)="onFormFieldChange('last_name', $event)"
                   name="last_name"
                   required
                 />
@@ -178,7 +181,8 @@
                 <label>Email</label>
                 <input 
                   type="email" 
-                  [(ngModel)]="editForm().email"
+                  [value]="editForm().email"
+                  (input)="onFormFieldChange('email', $event)"
                   name="email"
                   required
                 />
@@ -189,7 +193,8 @@
                   <label>Phone</label>
                   <input 
                     type="tel" 
-                    [(ngModel)]="editForm().phone"
+                    [value]="editForm().phone"
+                    (input)="onFormFieldChange('phone', $event)"
                     name="phone"
                     required
                   />
@@ -197,7 +202,10 @@
 
                 <div class="form-group">
                   <label>Department</label>
-                  <select [(ngModel)]="editForm().department" name="department" required>
+                  <select 
+                    [value]="editForm().department"
+                    (change)="onFormFieldChange('department', $event)"
+                    name="department" required>
                     <option value="">Select Department</option>
                     @for (dept of dataService.departments(); track dept.id) {
                       <option [value]="dept.name">{{ dept.name }}</option>

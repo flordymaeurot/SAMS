@@ -27,7 +27,7 @@ export const routes: Routes = [
       { path: 'departments', component: DepartmentsComponent, canActivate: [roleGuard(['admin'])] },
       { path: 'subjects', component: SubjectsComponent, canActivate: [roleGuard(['admin', 'instructor', 'student'])] },
       { path: 'subject/:id', component: SubjectDetailComponent, data: { renderMode: 'client' } },
-      { path: 'take-attendance', component: TakeAttendanceComponent, canActivate: [roleGuard(['instructor'])] },
+      { path: 'take-attendance', component: TakeAttendanceComponent, canActivate: [roleGuard(['instructor', 'student'])] },
       { path: 'attendance-records', component: AttendanceRecordsComponent },
       { path: 'calendar', component: CalendarComponent },
       { path: 'create-account', component: CreateAccountComponent, canActivate: [roleGuard(['admin', 'instructor'])] },

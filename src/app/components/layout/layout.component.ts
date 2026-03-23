@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { filter } from 'rxjs/operators';
-import { LucideAngularModule, LayoutDashboard, BookOpen, ClipboardList, CalendarDays, BarChart3, UserPlus, Settings, LogOut, ChevronLeft, ChevronRight, Users, Building2 } from 'lucide-angular';
+import { LucideAngularModule, LayoutDashboard, BookOpen, ClipboardList, BarChart3, UserPlus, Settings, LogOut, ChevronLeft, ChevronRight, Users, Building2 } from 'lucide-angular';
 
 @Component({
   selector: 'app-layout',
@@ -20,7 +20,6 @@ export class LayoutComponent {
   readonly LayoutDashboard = LayoutDashboard;
   readonly BookOpen = BookOpen;
   readonly ClipboardList = ClipboardList;
-  readonly CalendarDays = CalendarDays;
   readonly BarChart3 = BarChart3;
   readonly UserPlus = UserPlus;
   readonly Users = Users;
@@ -60,7 +59,6 @@ export class LayoutComponent {
       '/subjects': 'Subjects',
       '/take-attendance': 'Take Attendance',
       '/attendance-records': this.currentUser()?.role === 'parent' ? "My Child's Attendance" : 'Attendance Records',
-      '/calendar': 'Calendar',
       '/create-account': 'Create Account',
       '/reports': 'Reports',
       '/settings': 'Settings'
@@ -81,7 +79,6 @@ export class LayoutComponent {
       { path: '/subjects', label: role === 'student' ? 'My Subjects' : 'Subjects', icon: 'BookOpen', roles: ['instructor', 'student'] },
       { path: '/take-attendance', label: 'Take Attendance', icon: 'ClipboardList', roles: ['instructor'] },
       { path: '/attendance-records', label: role === 'parent' ? "My Child's Records" : 'Attendance Records', icon: 'ClipboardList', roles: ['admin', 'instructor', 'student', 'parent'] },
-      { path: '/calendar', label: 'Calendar', icon: 'CalendarDays', roles: ['admin', 'instructor', 'student', 'parent'] },
       { path: '/create-account', label: 'Create Account', icon: 'UserPlus', roles: ['admin', 'instructor'] },
       { path: '/reports', label: 'Reports', icon: 'BarChart3', roles: ['admin', 'instructor'] },
       { path: '/settings', label: 'Settings', icon: 'Settings', roles: ['admin', 'instructor', 'student', 'parent'] }
@@ -96,7 +93,6 @@ export class LayoutComponent {
       'Building2': this.Building2,
       'BookOpen': this.BookOpen,
       'ClipboardList': this.ClipboardList,
-      'CalendarDays': this.CalendarDays,
       'BarChart3': this.BarChart3,
       'UserPlus': this.UserPlus,
       'Settings': this.Settings

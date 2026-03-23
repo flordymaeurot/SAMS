@@ -3,20 +3,26 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../../services/data.service';
+import { AuthService } from '../../services/auth.service';
+import { RoleService } from '../../services/role.service';
 import { Attendance } from '../../models/user.model';
 import { LucideAngularModule, Users, QrCode, Camera, CheckCircle2, XCircle, AlertCircle, RotateCcw, BookOpen } from 'lucide-angular';
 import Swal from 'sweetalert2';
+import { QrCodeGeneratorComponent } from './qr-code-generator.component';
+import { QrCodeScannerComponent } from './qr-code-scanner.component';
 
 @Component({
   selector: 'app-take-attendance',
   standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule, QrCodeGeneratorComponent, QrCodeScannerComponent],
   templateUrl: './take-attendance.component.html',
   styleUrls: ['./take-attendance.component.css']
 })
 export class TakeAttendanceComponent implements OnInit {
   dataService = inject(DataService);
   private route = inject(ActivatedRoute);
+  private authService = inject(AuthService);
+  private roleService = inject(RoleService);
   
   // Lucide icons
   readonly Users = Users;
@@ -33,8 +39,11 @@ export class TakeAttendanceComponent implements OnInit {
   manualStudentId = '';
   message = signal('');
   messageType = signal<'success' | 'error'>('success');
+  attendanceMode = signal<'manual' | 'qr-generate' | 'qr-scan'>('manual');
 
   subjects = this.dataService.subjects;
+  canTakeAttendance = this.roleService.canTakeAttendance;
+  isStudent = this.roleService.isStudent;
 
   ngOnInit() {
     // Check if subject ID was passed via query params
@@ -45,6 +54,17 @@ export class TakeAttendanceComponent implements OnInit {
     });
   }
 
+  instructorSubjects = computed(() => {
+    const user = this.authService.currentUser();
+    if (!user) return this.subjects();
+    
+    // For instructors, show only their assigned subjects
+    const instructor = this.dataService.instructors().find(i => i.user_id === user.user_id);
+    if (!instructor) return this.subjects();
+    
+    return this.dataService.subjects().filter(s => s.instructor_id === instructor.instructor_id);
+  });
+
   enrolledStudents = computed(() => {
     if (!this.selectedSubjectId) return [];
     const enrollments = this.dataService.enrollments()
@@ -52,6 +72,10 @@ export class TakeAttendanceComponent implements OnInit {
     return this.dataService.students()
       .filter(s => enrollments.some(e => e.student_id === s.student_id));
   });
+
+  getSelectedSubject() {
+    return this.subjects().find(s => s.subject_id === this.selectedSubjectId);
+  }
 
   onSubjectChange() {
     this.scannerActive.set(false);
@@ -157,9 +181,5 @@ export class TakeAttendanceComponent implements OnInit {
         showConfirmButton: false
       });
     }
-  }
-
-  getSelectedSubject() {
-    return this.subjects().find(s => s.subject_id === this.selectedSubjectId);
   }
 }

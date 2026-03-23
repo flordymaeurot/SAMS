@@ -5,11 +5,12 @@ import { DataService } from '../../services/data.service';
 import { AuthService } from '../../services/auth.service';
 import { RoleService } from '../../services/role.service';
 import { LucideAngularModule, Users, BookOpen, TrendingUp, UserX, ClipboardList, Calendar } from 'lucide-angular';
+import { DashboardCalendarComponent } from '../calendar/dashboard-calendar.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, LucideAngularModule],
+  imports: [CommonModule, RouterModule, LucideAngularModule, DashboardCalendarComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })

@@ -45,6 +45,21 @@ export class AccountsComponent {
     role: 'instructor' as 'admin' | 'instructor' | 'student' | 'parent'
   });
 
+  // Update form field helper
+  updateFormField(field: string, value: string) {
+    const current = this.editForm();
+    this.editForm.set({
+      ...current,
+      [field]: value
+    });
+  }
+
+  // Handle input event for form fields
+  onFormFieldChange(field: string, event: Event) {
+    const value = (event.target as HTMLInputElement | HTMLSelectElement).value;
+    this.updateFormField(field, value);
+  }
+
   allAccounts = computed(() => {
     return this.dataService.users().filter(u => u.user_id !== '1'); // Exclude master admin
   });
@@ -108,60 +123,67 @@ export class AccountsComponent {
 
   async saveEdit() {
     const account = this.selectedAccount();
-    const instructorDetails = this.selectedInstructorDetails();
     if (!account) return;
 
     const form = this.editForm();
     
-    // Generate full name from parts
-    const fullName = form.middle_name 
-      ? `${form.first_name} ${form.middle_name} ${form.last_name}`
-      : `${form.first_name} ${form.last_name}`;
-    
-    const updatedUser: User = {
-      ...account,
-      first_name: form.first_name,
-      middle_name: form.middle_name,
-      last_name: form.last_name,
-      full_name: fullName,
-      email: form.email,
-      role: form.role
-    };
-
     try {
-      await this.dataService.updateUser(updatedUser);
+      // Generate full name
+      const fullName = form.middle_name 
+        ? `${form.first_name} ${form.middle_name} ${form.last_name}`
+        : `${form.first_name} ${form.last_name}`;
       
+      const updatedUser: User = {
+        ...account,
+        first_name: form.first_name,
+        middle_name: form.middle_name,
+        last_name: form.last_name,
+        full_name: fullName,
+        email: form.email,
+        role: form.role
+      };
+
+      // Update in parallel if instructor
+      const updatePromises: Promise<any>[] = [
+        this.dataService.updateUser(updatedUser)
+      ];
+
       // Update instructor details if it's an instructor
-      if (account.role === 'instructor' && instructorDetails) {
-        const updatedInstructor = {
-          ...instructorDetails,
-          first_name: form.first_name,
-          middle_name: form.middle_name,
-          last_name: form.last_name,
-          full_name: fullName,
-          email: form.email,
-          phone: form.phone,
-          department: form.department
-        };
-        await this.dataService.updateInstructor(updatedInstructor);
-        this.selectedInstructorDetails.set(updatedInstructor);
+      if (account.role === 'instructor') {
+        const instructorDetails = this.selectedInstructorDetails();
+        if (instructorDetails) {
+          const updatedInstructor = {
+            ...instructorDetails,
+            first_name: form.first_name,
+            middle_name: form.middle_name,
+            last_name: form.last_name,
+            full_name: fullName,
+            email: form.email,
+            phone: form.phone,
+            department: form.department
+          };
+          updatePromises.push(this.dataService.updateInstructor(updatedInstructor));
+        }
       }
+
+      // Wait for updates
+      await Promise.all(updatePromises);
       
       this.selectedAccount.set(updatedUser);
       this.isEditing.set(false);
       
       await Swal.fire({
         title: 'Updated!',
-        text: 'Account has been updated successfully.',
+        text: 'Account updated successfully.',
         icon: 'success',
-        timer: 2000,
+        timer: 1500,
         showConfirmButton: false
       });
     } catch (error) {
       console.error('Error updating account:', error);
       await Swal.fire({
         title: 'Error!',
-        text: 'Failed to update account. Please try again.',
+        text: 'Failed to update account.',
         icon: 'error'
       });
     }
@@ -194,15 +216,9 @@ export class AccountsComponent {
     const account = this.selectedAccount();
     if (!account) return;
 
-    // Confirm deletion
     const result = await Swal.fire({
       title: 'Delete Account?',
-      html: `
-        <p>Are you sure you want to delete <strong>${account.full_name}</strong>?</p>
-        <p class="text-sm text-gray-600 mt-2">This action cannot be undone.</p>
-        ${account.role === 'instructor' ? '<p class="text-sm text-red-600 mt-2">⚠️ This will delete all subjects and unenroll students. Student and parent accounts will remain.</p>' : ''}
-        ${account.role === 'student' ? '<p class="text-sm text-red-600 mt-2">⚠️ This will also delete the parent account and all attendance records.</p>' : ''}
-      `,
+      html: `Are you sure you want to delete <strong>${account.full_name}</strong>?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#dc2626',
@@ -214,116 +230,76 @@ export class AccountsComponent {
     if (!result.isConfirmed) return;
 
     try {
-      // Perform cascading deletes based on role
+      const userId = account.user_id;
+      
+      console.log('Starting deletion process for:', userId);
+      
+      // Close modal first
+      this.closeModal();
+
+      // Delete related records in parallel
+      const deleteOps: Promise<any>[] = [];
+
       if (account.role === 'instructor') {
-        await this.deleteInstructorCascade(account.user_id);
+        const instructor = this.dataService.instructors().find(i => i.user_id === userId);
+        if (instructor) {
+          const subjects = this.dataService.subjects().filter(s => s.instructor_id === instructor.instructor_id);
+          for (const subject of subjects) {
+            deleteOps.push(this.dataService.deleteSubject(subject.subject_id).catch(e => console.warn('Subject delete failed:', e)));
+          }
+          deleteOps.push(this.dataService.deleteInstructor(instructor.instructor_id).catch(e => console.warn('Instructor delete failed:', e)));
+        }
       } else if (account.role === 'student') {
-        await this.deleteStudentCascade(account.user_id);
+        const student = this.dataService.students().find(s => s.user_id === userId);
+        if (student) {
+          const parent = this.dataService.parents().find(p => p.student_id === student.student_id);
+          if (parent) {
+            deleteOps.push(this.dataService.deleteParent(parent.parent_id).catch(e => console.warn('Parent delete failed:', e)));
+            deleteOps.push(this.dataService.deleteUser(parent.user_id).catch(e => console.warn('Parent user delete failed:', e)));
+          }
+          deleteOps.push(this.dataService.deleteStudent(student.student_id).catch(e => console.warn('Student delete failed:', e)));
+        }
       } else if (account.role === 'parent') {
-        await this.deleteParentCascade(account.user_id);
+        const parent = this.dataService.parents().find(p => p.user_id === userId);
+        if (parent) {
+          deleteOps.push(this.dataService.deleteParent(parent.parent_id).catch(e => console.warn('Parent delete failed:', e)));
+        }
       }
 
-      // Delete the user account
-      await this.dataService.deleteUser(account.user_id);
+      // Execute related deletes
+      if (deleteOps.length > 0) {
+        await Promise.all(deleteOps);
+      }
 
-      // Close modal and show success
-      this.closeModal();
-      
+      // Delete main user account - DO NOT CATCH ERRORS
+      console.log('Deleting main user account:', userId);
+      await this.dataService.deleteUser(userId);
+      console.log('User deleted successfully');
+
+      // Verify deletion by checking if user is gone
+      const userStillExists = this.dataService.users().some(u => u.user_id === userId);
+      if (userStillExists) {
+        console.error('ERROR: User still exists after deletion!');
+        throw new Error('Deletion failed: user still in database');
+      }
+
+      console.log('Deletion verified - user is gone');
+
       await Swal.fire({
         title: 'Deleted!',
-        text: 'Account has been deleted successfully.',
+        text: 'Account deleted successfully.',
         icon: 'success',
-        timer: 2000,
+        timer: 1000,
         showConfirmButton: false
       });
 
-      // Reload data
-      await this.dataService.loadAllData();
-    } catch (error) {
-      console.error('Error deleting account:', error);
+    } catch (error: any) {
+      console.error('Delete error:', error);
       await Swal.fire({
         title: 'Error!',
-        text: 'Failed to delete account. Please try again.',
+        text: error?.message || 'Failed to delete account. Check console for details.',
         icon: 'error'
       });
     }
-  }
-
-  private async deleteInstructorCascade(userId: string) {
-    // Find instructor record
-    const instructor = this.dataService.instructors().find(i => i.user_id === userId);
-    if (!instructor) return;
-
-    // Get all subjects for this instructor
-    const instructorSubjects = this.dataService.subjects().filter(s => s.instructor_id === instructor.instructor_id);
-    
-    for (const subject of instructorSubjects) {
-      // Get all enrollments for this subject
-      const subjectEnrollments = this.dataService.enrollments().filter(e => e.subject_id === subject.subject_id);
-      
-      for (const enrollment of subjectEnrollments) {
-        // Delete attendance records for this enrollment
-        const attendanceRecords = this.dataService.attendance().filter(a => 
-          a.student_id === enrollment.student_id && a.subject_id === subject.subject_id
-        );
-        for (const attendance of attendanceRecords) {
-          try {
-            await this.http.delete(`${this.apiUrl}/attendance/${attendance.attendance_id}`).toPromise();
-          } catch (error) {
-            console.error('Error deleting attendance:', error);
-          }
-        }
-        
-        // Delete enrollment
-        await this.dataService.unenrollStudent(enrollment.enrollment_id);
-      }
-      
-      // Delete subject (students and parents remain in the system)
-      await this.dataService.deleteSubject(subject.subject_id);
-    }
-    
-    // Delete instructor record
-    await this.dataService.deleteInstructor(instructor.instructor_id);
-  }
-
-  private async deleteStudentCascade(userId: string) {
-    // Find student record
-    const student = this.dataService.students().find(s => s.user_id === userId);
-    if (!student) return;
-
-    // Delete all attendance records
-    const attendanceRecords = this.dataService.attendance().filter(a => a.student_id === student.student_id);
-    for (const attendance of attendanceRecords) {
-      try {
-        await this.http.delete(`${this.apiUrl}/attendance/${attendance.attendance_id}`).toPromise();
-      } catch (error) {
-        console.error('Error deleting attendance:', error);
-      }
-    }
-
-    // Delete all enrollments
-    const enrollments = this.dataService.enrollments().filter(e => e.student_id === student.student_id);
-    for (const enrollment of enrollments) {
-      await this.dataService.unenrollStudent(enrollment.enrollment_id);
-    }
-
-    // Find and delete parent if exists
-    const parent = this.dataService.parents().find(p => p.student_id === student.student_id);
-    if (parent) {
-      await this.dataService.deleteParent(parent.parent_id);
-      await this.dataService.deleteUser(parent.user_id);
-    }
-
-    // Delete student record
-    await this.dataService.deleteStudent(student.student_id);
-  }
-
-  private async deleteParentCascade(userId: string) {
-    // Find parent record
-    const parent = this.dataService.parents().find(p => p.user_id === userId);
-    if (!parent) return;
-
-    // Just delete parent record (student remains)
-    await this.dataService.deleteParent(parent.parent_id);
   }
 }

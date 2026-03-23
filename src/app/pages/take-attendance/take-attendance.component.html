@@ -22,7 +22,7 @@
     
     @if (!selectedSubjectId) {
       <div class="subjects-grid">
-        @for (subject of subjects(); track subject.subject_id) {
+        @for (subject of instructorSubjects(); track subject.subject_id) {
           <button (click)="selectedSubjectId = subject.subject_id" class="subject-card">
             <div class="subject-card-header">
               <div class="subject-icon">
@@ -60,10 +60,44 @@
   </div>
 
   @if (selectedSubjectId) {
-    <!-- Two Column Layout -->
-    <div class="two-column-layout">
-      <!-- Left Column: Student List -->
-      <div class="students-column">
+    <!-- Attendance Mode Tabs (for Instructors Only) -->
+    @if (canTakeAttendance()) {
+      <div class="attendance-tabs">
+        <button 
+          [class.tab-active]="attendanceMode() === 'manual'"
+          (click)="attendanceMode.set('manual')"
+          class="tab-button">
+          <lucide-icon [img]="Users" [size]="18"></lucide-icon>
+          Manual Entry
+        </button>
+        <button 
+          [class.tab-active]="attendanceMode() === 'qr-generate'"
+          (click)="attendanceMode.set('qr-generate')"
+          class="tab-button">
+          <lucide-icon [img]="QrCode" [size]="18"></lucide-icon>
+          Generate QR
+        </button>
+        <button 
+          [class.tab-active]="attendanceMode() === 'qr-scan'"
+          (click)="attendanceMode.set('qr-scan')"
+          class="tab-button">
+          <lucide-icon [img]="Camera" [size]="18"></lucide-icon>
+          Monitor Scans
+        </button>
+      </div>
+    } @else {
+      <!-- Students Only See Scan QR Tab -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+        <h3 class="text-lg font-bold text-slate-800 mb-4">Scan QR Code to Mark Attendance</h3>
+        <app-qr-code-scanner></app-qr-code-scanner>
+      </div>
+    }
+
+    <!-- Manual Attendance Mode (Instructors Only) -->
+    @if (attendanceMode() === 'manual' && canTakeAttendance()) {
+      <div class="two-column-layout">
+        <!-- Left Column: Student List -->
+        <div class="students-column">
         <div class="section-card">
           <div class="section-header">
             <lucide-icon [img]="Users" [size]="20" class="section-icon"></lucide-icon>
@@ -152,7 +186,22 @@
           }
         </div>
       </div>
-    </div>
+      </div>
+    }
+
+    <!-- QR Code Generator Mode (Instructor Only) -->
+    @if (attendanceMode() === 'qr-generate' && canTakeAttendance()) {
+      <app-qr-code-generator></app-qr-code-generator>
+    }
+
+    <!-- QR Code Monitoring Mode (Instructor) -->
+    @if (attendanceMode() === 'qr-scan' && canTakeAttendance()) {
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+        <h3 class="text-lg font-bold text-slate-800 mb-4">Real-time Scan Monitoring</h3>
+        <p class="text-slate-600 mb-4">Waiting for students to scan the QR code...</p>
+        <app-qr-code-generator></app-qr-code-generator>
+      </div>
+    }
   }
 
   <!-- Toast Message -->
