@@ -52,32 +52,14 @@ export class SubjectDetailComponent {
 
   subjectAttendance = computed(() => {
     const allAttendance = this.dataService.attendance().filter(a => a.subject_id === this.subjectId);
-    
-    // If student, only show their own attendance records
-    if (this.isStudent()) {
-      const currentUser = this.authService.currentUser();
-      if (!currentUser) return [];
-      
-      const student = this.dataService.students().find(s => s.user_id === currentUser.user_id);
-      if (!student) return [];
-      
-      return allAttendance.filter(a => a.student_id === student.student_id);
-    }
-    
-    // Instructors and admins see all attendance
     return allAttendance;
   });
 
   availableStudents = computed(() => {
     const subject = this.subject();
     if (!subject) return [];
-    
     const enrolledIds = this.enrollments().map(e => e.student_id);
-    return this.dataService.students().filter(s => 
-      !enrolledIds.includes(s.student_id) &&
-      s.grade_level === subject.grade_level &&
-      s.section === subject.section
-    );
+    return this.dataService.students().filter(s => !enrolledIds.includes(s.student_id));
   });
 
   enrollStudent(student: any) {

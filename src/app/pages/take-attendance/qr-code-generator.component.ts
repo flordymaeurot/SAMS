@@ -21,25 +21,35 @@ import Swal from 'sweetalert2';
           <lucide-icon [img]="QrCodeIcon" [size]="48" class="text-amber-600"></lucide-icon>
         </div>
 
-        <!-- Subject Selection -->
+        <!-- Class/Section Selection -->
         <div class="mb-6">
-          <label class="block text-sm font-medium text-slate-700 mb-2">Select Subject</label>
-          <select [(ngModel)]="selectedSubjectId" (change)="onSubjectChange()" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
-            <option value="">-- Choose a subject --</option>
-            @for (subject of instructorSubjects(); track subject.subject_id) {
-              <option [value]="subject.subject_id">{{ subject.subject_name }} ({{ subject.section }})</option>
-            }
+          <label class="block text-sm font-medium text-slate-700 mb-2">Class/Section</label>
+          <input [(ngModel)]="selectedClass" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="e.g. BSIT-1A">
+        </div>
+        <!-- Session Duration -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-slate-700 mb-2">Session Duration (minutes)</label>
+          <select [(ngModel)]="sessionDuration" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="30">30</option>
+            <option value="45">45</option>
+            <option value="60">60</option>
           </select>
         </div>
 
-        <!-- QR Code Display -->
+        <!-- QR Code Display & Session State -->
         @if (qrCodeImage()) {
           <div class="border-2 border-dashed border-amber-300 rounded-lg p-8 bg-amber-50 text-center">
+            <div class="flex justify-center mb-2">
+              <span [ngClass]="sessionStateColor()" class="inline-block w-4 h-4 rounded-full mr-2"></span>
+              <span class="font-semibold">{{ sessionStateLabel() }}</span>
+            </div>
             <img [src]="qrCodeImage()" alt="QR Code" class="w-64 h-64 mx-auto mb-4 bg-white p-2 rounded-lg">
-            <p class="text-slate-700 font-medium mb-4">{{ selectedSubjectName() }}</p>
+            <p class="text-slate-700 font-medium mb-4">{{ selectedClass }}</p>
             <p class="text-sm text-slate-600 mb-6">Active until: {{ sessionExpiryTime() | date:'short' }}</p>
-            
-            <div class="flex gap-3 justify-center">
+            <div class="flex gap-3 justify-center mb-4">
               <button (click)="downloadQR()" class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white rounded-lg px-4 py-2 font-medium transition-colors">
                 <lucide-icon [img]="Download" [size]="18"></lucide-icon>
                 Download
@@ -48,13 +58,29 @@ import Swal from 'sweetalert2';
                 <lucide-icon [img]="Copy" [size]="18"></lucide-icon>
                 Copy
               </button>
+              <button (click)="regenerateQR()" class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg px-4 py-2 font-medium transition-colors">
+                <lucide-icon [img]="QrCodeIcon" [size]="18"></lucide-icon>
+                Regenerate QR
+              </button>
               <button (click)="stopSession()" class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white rounded-lg px-4 py-2 font-medium transition-colors">
                 <lucide-icon [img]="X" [size]="18"></lucide-icon>
                 Stop
               </button>
             </div>
+            <!-- Real-time Stats -->
+            <div class="flex justify-center gap-6 mb-2">
+              <div><span class="font-bold">Present:</span> {{ presentCount() }}</div>
+              <div><span class="font-bold">Late:</span> {{ lateCount() }}</div>
+              <div><span class="font-bold">Absent:</span> {{ absentCount() }}</div>
+            </div>
+            <!-- Session Log -->
+            <div class="text-xs text-slate-500 mt-2">
+              <div>Start: {{ sessionLog.start | date:'shortTime' }}</div>
+              <div>End: {{ sessionLog.end | date:'shortTime' }}</div>
+              <div>Total Scanned: {{ attendanceList().length }}</div>
+            </div>
           </div>
-        } @else if (selectedSubjectId()) {
+        } @else if (selectedClass && sessionDuration) {
           <button (click)="generateQRCode()" [disabled]="generatingQR()" class="w-full bg-amber-600 hover:bg-amber-700 disabled:bg-amber-400 text-white rounded-lg px-6 py-3 font-medium transition-colors">
             @if (generatingQR()) {
               <span>Generating...</span>
@@ -63,6 +89,7 @@ import Swal from 'sweetalert2';
             }
           </button>
         }
+  // --- Moved to class body below ---
 
         <!-- Real-time Attendance -->
         @if (attendanceList().length > 0) {
@@ -87,6 +114,39 @@ import Swal from 'sweetalert2';
   styleUrls: ['./qr-code-generator.component.css']
 })
 export class QrCodeGeneratorComponent implements OnInit {
+    // Session log and state
+    sessionLog = { start: null as Date | null, end: null as Date | null };
+
+    // Session state indicator
+    sessionStateColor() {
+      const now = new Date();
+      const expiry = this.sessionExpiryTime();
+      if (!this.qrCodeImage()) return 'bg-gray-400';
+      const msLeft = expiry.getTime() - now.getTime();
+      if (msLeft > 5 * 60 * 1000) return 'bg-green-500'; // >5 min left
+      if (msLeft > 0) return 'bg-yellow-400'; // <5 min left
+      return 'bg-red-500'; // expired
+    }
+    sessionStateLabel() {
+      const now = new Date();
+      const expiry = this.sessionExpiryTime();
+      if (!this.qrCodeImage()) return 'Inactive';
+      const msLeft = expiry.getTime() - now.getTime();
+      if (msLeft > 5 * 60 * 1000) return 'Active';
+      if (msLeft > 0) return 'Ending Soon';
+      return 'Expired';
+    }
+
+    // Real-time stats (stub logic, replace with real attendance logic)
+    presentCount() { return this.attendanceList().filter(s => s.status === 'present').length; }
+    lateCount() { return this.attendanceList().filter(s => s.status === 'late').length; }
+    absentCount() { return 40 - this.attendanceList().length; } // Example: 40 enrolled
+
+    // Regenerate QR (invalidate old, create new)
+    async regenerateQR() {
+      this.stopSession();
+      await this.generateQRCode();
+    }
   private dataService = inject(DataService);
   private authService = inject(AuthService);
 
@@ -95,7 +155,8 @@ export class QrCodeGeneratorComponent implements OnInit {
   readonly Download = Download;
   readonly X = X;
 
-  selectedSubjectId = signal<string>('');
+  selectedClass = '';
+  sessionDuration = 5;
   qrCodeImage = signal<string | null>(null);
   attendanceList = signal<any[]>([]);
   sessionId = signal<string>('');
@@ -104,21 +165,7 @@ export class QrCodeGeneratorComponent implements OnInit {
 
   currentUser = this.authService.currentUser;
 
-  instructorSubjects = computed(() => {
-    const user = this.currentUser();
-    if (!user) return [];
-    
-    const instructor = this.dataService.instructors().find(i => i.user_id === user.user_id);
-    if (!instructor) return [];
-    
-    return this.dataService.subjects().filter(s => s.instructor_id === instructor.instructor_id);
-  });
-
-  selectedSubjectName = computed(() => {
-    const subjectId = this.selectedSubjectId();
-    const subject = this.dataService.subjects().find(s => s.subject_id === subjectId);
-    return subject?.subject_name || '';
-  });
+  // instructorSubjects and selectedSubjectName removed (no subject selection)
 
   ngOnInit() {
     // Poll for new attendance records
@@ -126,27 +173,27 @@ export class QrCodeGeneratorComponent implements OnInit {
   }
 
   async generateQRCode() {
-    const subjectId = this.selectedSubjectId();
-    if (!subjectId) {
-      await Swal.fire('Error', 'Please select a subject', 'error');
+    if (!this.selectedClass || !this.sessionDuration) {
+      await Swal.fire('Error', 'Please select class/section and session duration', 'error');
       return;
     }
 
     this.generatingQR.set(true);
     try {
-      // Create session ID with subject info
-      this.sessionId.set(`ATT_${subjectId}_${Date.now()}`);
-      const expiryTime = new Date();
-      expiryTime.setMinutes(expiryTime.getMinutes() + 15);
+      // Create session ID with class/section info
+      this.sessionId.set(`ATT_${this.selectedClass}_${Date.now()}`);
+      const now = new Date();
+      const expiryTime = new Date(now);
+      expiryTime.setMinutes(expiryTime.getMinutes() + Number(this.sessionDuration));
       this.sessionExpiryTime.set(expiryTime);
+      this.sessionLog.start = now;
+      this.sessionLog.end = expiryTime;
 
       // Dynamically import qrcode library
       // @ts-ignore
       const QRCode = (await import('qrcode')).default;
       const qrData = `ATTEND:${this.sessionId()}`;
-      
-      console.log('Generating QR with data:', qrData);
-      
+
       // Generate QR code as data URL
       const dataUrl = await QRCode.toDataURL(qrData, {
         width: 400,
@@ -156,8 +203,7 @@ export class QrCodeGeneratorComponent implements OnInit {
           light: '#FFFFFF'
         }
       });
-      
-      console.log('QR Code generated successfully');
+
       this.qrCodeImage.set(dataUrl);
       this.attendanceList.set([]);
 
@@ -169,12 +215,6 @@ export class QrCodeGeneratorComponent implements OnInit {
         showConfirmButton: false
       });
     } catch (error) {
-      console.error('QR Generation Error Details:', {
-        error: error,
-        message: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined
-      });
-      
       const errorMsg = error instanceof Error ? error.message : String(error);
       await Swal.fire(
         'Error',
@@ -186,11 +226,7 @@ export class QrCodeGeneratorComponent implements OnInit {
     }
   }
 
-  onSubjectChange() {
-    this.qrCodeImage.set(null);
-    this.sessionId.set('');
-    this.attendanceList.set([]);
-  }
+  // onSubjectChange removed (no subject selection)
 
   refreshAttendance() {
     if (!this.sessionId()) return;
@@ -205,7 +241,7 @@ export class QrCodeGeneratorComponent implements OnInit {
 
     const link = document.createElement('a');
     link.href = image;
-    link.download = `attendance-${this.selectedSubjectId()}.png`;
+    link.download = `attendance-${this.selectedClass}.png`;
     link.click();
 
     await Swal.fire({

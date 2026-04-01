@@ -25,8 +25,8 @@
     },
     {
       "user_id": "U1774098633716",
-      "email": "student@school.com",
-      "password": "student123",
+      "email": "flordymae.urot@school.com",
+      "password": "flordymae123",
       "role": "student",
       "first_name": "Flordymae",
       "middle_name": "A",
@@ -61,8 +61,8 @@
     },
     {
       "user_id": "U17741844804467410",
-      "email": "student@school.com",
-      "password": "student123",
+      "email": "juan.delacruz@school.com",
+      "password": "juan123",
       "role": "student",
       "first_name": "Juan",
       "middle_name": "A",
@@ -85,8 +85,8 @@
     },
     {
       "user_id": "U17742763248031712",
-      "email": "student@school.com",
-      "password": "student123",
+      "email": "cherryrose.dalapag@school.com",
+      "password": "cherryrose123",
       "role": "student",
       "first_name": "CherryRose",
       "last_name": "Dalapag",
@@ -96,8 +96,8 @@
     },
     {
       "user_id": "U17742769037466465",
-      "email": "studentEbarle@school.com",
-      "password": "student123",
+      "email": "ebarle.dominique@school.com",
+      "password": "ebarle123",
       "role": "student",
       "first_name": "Ebarle",
       "last_name": "Dominique",
@@ -118,8 +118,8 @@
     },
     {
       "user_id": "U17742772511281094",
-      "email": "studentDeepz@school.com",
-      "password": "student123",
+      "email": "deepz.paryani@school.com",
+      "password": "deepz123",
       "role": "student",
       "first_name": "Deepz",
       "last_name": "Paryani",
@@ -160,7 +160,7 @@
       "middle_name": "A",
       "last_name": "Urot",
       "full_name": "Flordymae A Urot",
-      "email": "student@school.com",
+      "email": "flordymae.urot@school.com",
       "grade_level": "Grade 12",
       "section": "Section A",
       "qr_code_data": "STUDENT-Stu 001",
@@ -175,7 +175,7 @@
       "middle_name": "A",
       "last_name": "Delacruz",
       "full_name": "Juan A Delacruz",
-      "email": "student@school.com",
+      "email": "juan.delacruz@school.com",
       "grade_level": "Grade 12",
       "section": "Section B",
       "qr_code_data": "STUDENT-2024303797",
@@ -189,7 +189,7 @@
       "first_name": "CherryRose",
       "last_name": "Dalapag",
       "full_name": "CherryRose Dalapag",
-      "email": "student@school.com",
+      "email": "cherryrose.dalapag@school.com",
       "grade_level": "Grade 12",
       "section": "Section A",
       "qr_code_data": "STUDENT-2024303694",
@@ -203,7 +203,7 @@
       "first_name": "Ebarle",
       "last_name": "Dominique",
       "full_name": "Ebarle Dominique",
-      "email": "studentEbarle@school.com",
+      "email": "ebarle.dominique@school.com",
       "grade_level": "2nd yr",
       "section": "Section A",
       "qr_code_data": "STUDENT-2024303765",
@@ -217,7 +217,7 @@
       "first_name": "Deepz",
       "last_name": "Paryani",
       "full_name": "Deepz Paryani",
-      "email": "studentDeepz@school.com",
+      "email": "deepz.paryani@school.com",
       "grade_level": "Grade 12",
       "section": "Section A",
       "qr_code_data": "STUDENT-STU-003",
@@ -307,7 +307,53 @@
       "id": 1
     }
   ],
-  "enrollments": [],
+  "enrollments": [
+    {
+      "enrollment_id": "E1774463523136",
+      "subject_id": "SUB1774183258686",
+      "student_id": "2024303797",
+      "student_name": "Juan A Delacruz",
+      "subject_name": "3534",
+      "enrolled_date": "2026-03-25T18:32:03.136Z",
+      "id": 2
+    },
+    {
+      "enrollment_id": "E1774463526249",
+      "subject_id": "SUB1774183258686",
+      "student_id": "2024303694",
+      "student_name": "CherryRose Dalapag",
+      "subject_name": "3534",
+      "enrolled_date": "2026-03-25T18:32:06.249Z",
+      "id": 3
+    },
+    {
+      "enrollment_id": "E1774463529582",
+      "subject_id": "SUB1774183258686",
+      "student_id": "2024303765",
+      "student_name": "Ebarle Dominique",
+      "subject_name": "3534",
+      "enrolled_date": "2026-03-25T18:32:09.582Z",
+      "id": 4
+    },
+    {
+      "enrollment_id": "E1774463532681",
+      "subject_id": "SUB1774183258686",
+      "student_id": "STU-003",
+      "student_name": "Deepz Paryani",
+      "subject_name": "3534",
+      "enrolled_date": "2026-03-25T18:32:12.681Z",
+      "id": 5
+    },
+    {
+      "enrollment_id": "E1774463545383",
+      "subject_id": "SUB1774183258686",
+      "student_id": "Stu 001",
+      "student_name": "Flordymae A Urot",
+      "subject_name": "3534",
+      "enrolled_date": "2026-03-25T18:32:25.383Z",
+      "id": 6
+    }
+  ],
   "attendance": [],
   "departments": [
     {
