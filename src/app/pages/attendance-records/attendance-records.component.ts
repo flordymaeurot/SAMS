@@ -25,7 +25,27 @@ export class AttendanceRecordsComponent {
   filterStatus = '';
   searchTerm = '';
 
-  subjects = this.dataService.subjects;
+  subjects = computed(() => {
+    const user = this.authService.currentUser();
+    const all = this.dataService.subjects();
+    if (user?.role === 'instructor') {
+      const instructor = this.dataService.instructors().find(i => i.user_id === user.user_id);
+      return instructor ? all.filter(s => s.instructor_id === instructor.instructor_id) : [];
+    }
+    if (user?.role === 'student') {
+      const student = this.dataService.students().find(s => s.user_id === user.user_id);
+      if (!student) return [];
+      const enrolledIds = this.dataService.enrollments().filter(e => e.student_id === student.student_id).map(e => e.subject_id);
+      return all.filter(s => enrolledIds.includes(s.subject_id));
+    }
+    if (user?.role === 'parent') {
+      const parent = this.dataService.parents().find(p => p.user_id === user.user_id);
+      if (!parent) return [];
+      const enrolledIds = this.dataService.enrollments().filter(e => e.student_id === parent.student_id).map(e => e.subject_id);
+      return all.filter(s => enrolledIds.includes(s.subject_id));
+    }
+    return all;
+  });
 
   filteredRecords = computed(() => {
     let records = this.dataService.attendance();

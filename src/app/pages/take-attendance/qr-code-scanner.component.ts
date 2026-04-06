@@ -249,9 +249,11 @@ export class QrCodeScannerComponent implements OnInit, OnDestroy {
       
       if (!student) throw new Error('Student not found');
 
-      // Extract subject_id from sessionId (format: ATT_SUBJECT_ID_TIMESTAMP)
-      const sessionParts = sessionId.split('_');
-      const subjectId = sessionParts[1];
+      // Extract subject_id from sessionId (format: ATT_<subjectId>_<timestamp>)
+      // timestamp is always the last underscore-separated segment
+      const withoutPrefix = sessionId.replace(/^ATT_/, '');
+      const lastUnderscoreIdx = withoutPrefix.lastIndexOf('_');
+      const subjectId = lastUnderscoreIdx !== -1 ? withoutPrefix.substring(0, lastUnderscoreIdx) : withoutPrefix;
       const subject = this.dataService.subjects().find(s => s.subject_id === subjectId);
       
       if (!subject) throw new Error('Subject not found');

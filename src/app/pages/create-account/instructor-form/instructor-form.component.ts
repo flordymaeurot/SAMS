@@ -34,31 +34,28 @@ export class InstructorFormComponent {
     
     this.loading.set(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      const fullName = [
-        this.formData.first_name,
-        this.formData.middle_name,
-        this.formData.last_name
-      ].filter(n => n).join(' ');
+    const fullName = [
+      this.formData.first_name,
+      this.formData.middle_name,
+      this.formData.last_name
+    ].filter(n => n).join(' ');
 
-      const instructor: Instructor = {
-        instructor_id: this.formData.instructor_id,
-        first_name: this.formData.first_name,
-        middle_name: this.formData.middle_name || undefined,
-        last_name: this.formData.last_name,
-        full_name: fullName,
-        email: this.formData.email,
-        phone: this.formData.phone,
-        department: this.formData.department,
-        user_id: 'U' + Date.now(),
-        created_at: new Date().toISOString()
-      };
-      
-      this.submitForm.emit(instructor);
-      this.resetForm();
-      this.loading.set(false);
-    }, 800);
+    const instructor: Instructor = {
+      instructor_id: this.formData.instructor_id,
+      first_name: this.formData.first_name,
+      middle_name: this.formData.middle_name || undefined,
+      last_name: this.formData.last_name,
+      full_name: fullName,
+      email: this.formData.email,
+      phone: this.formData.phone,
+      department: this.formData.department,
+      user_id: '',
+      created_at: new Date().toISOString()
+    };
+    
+    this.submitForm.emit(instructor);
+    this.resetForm();
+    this.loading.set(false);
   }
 
   isFormValid(): boolean {

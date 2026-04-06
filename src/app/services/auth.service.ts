@@ -64,16 +64,7 @@ export class AuthService {
   }
 
   private redirectByRole(role: string) {
-    switch(role) {
-      case 'admin':
-      case 'instructor':
-        this.router.navigate(['/dashboard']);
-        break;
-      case 'student':
-      case 'parent':
-        this.router.navigate(['/attendance-records']);
-        break;
-    }
+    this.router.navigate(['/dashboard']);
   }
 
   isAuthenticated(): boolean {

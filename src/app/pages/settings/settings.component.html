@@ -32,16 +32,6 @@
             placeholder="Enter your full name"
           />
         </div>
-        <div>
-          <label for="phone">Phone Number</label>
-          <input 
-            type="tel" 
-            id="phone"
-            [(ngModel)]="profileForm.phone" 
-            name="phone"
-            placeholder="(555) 123-4567"
-          />
-        </div>
         <button type="submit" class="submit-button">
           Update Profile
         </button>
@@ -54,36 +44,63 @@
       <form (ngSubmit)="changePassword()">
         <div>
           <label for="current-password">Current Password</label>
-          <input 
-            type="password" 
-            id="current-password"
-            [(ngModel)]="passwordForm.current" 
-            name="current" 
-            placeholder="Enter current password"
-            required
-          />
+          <div style="position:relative;">
+            <input 
+              [type]="showCurrent() ? 'text' : 'password'"
+              id="current-password"
+              [(ngModel)]="passwordForm.current" 
+              name="current" 
+              placeholder="Enter current password"
+              required
+              style="padding-right: 2.75rem;"
+            />
+            <button type="button" (click)="showCurrent.set(!showCurrent())" class="eye-toggle">
+              <span class="eye-icon-wrap" [class.hidden-pass]="!showCurrent()">
+                <span class="icon-eye"><lucide-icon [img]="Eye" [size]="18"></lucide-icon></span>
+                <span class="icon-eye-off"><lucide-icon [img]="EyeClosed" [size]="18"></lucide-icon></span>
+              </span>
+            </button>
+          </div>
         </div>
         <div>
           <label for="new-password">New Password</label>
-          <input 
-            type="password" 
-            id="new-password"
-            [(ngModel)]="passwordForm.new" 
-            name="new" 
-            placeholder="Enter new password"
-            required
-          />
+          <div style="position:relative;">
+            <input 
+              [type]="showNew() ? 'text' : 'password'"
+              id="new-password"
+              [(ngModel)]="passwordForm.new" 
+              name="new" 
+              placeholder="Enter new password"
+              required
+              style="padding-right: 2.75rem;"
+            />
+            <button type="button" (click)="showNew.set(!showNew())" class="eye-toggle">
+              <span class="eye-icon-wrap" [class.hidden-pass]="!showNew()">
+                <span class="icon-eye"><lucide-icon [img]="Eye" [size]="18"></lucide-icon></span>
+                <span class="icon-eye-off"><lucide-icon [img]="EyeClosed" [size]="18"></lucide-icon></span>
+              </span>
+            </button>
+          </div>
         </div>
         <div>
           <label for="confirm-password">Confirm New Password</label>
-          <input 
-            type="password" 
-            id="confirm-password"
-            [(ngModel)]="passwordForm.confirm" 
-            name="confirm" 
-            placeholder="Confirm new password"
-            required
-          />
+          <div style="position:relative;">
+            <input 
+              [type]="showConfirm() ? 'text' : 'password'"
+              id="confirm-password"
+              [(ngModel)]="passwordForm.confirm" 
+              name="confirm" 
+              placeholder="Confirm new password"
+              required
+              style="padding-right: 2.75rem;"
+            />
+            <button type="button" (click)="showConfirm.set(!showConfirm())" class="eye-toggle">
+              <span class="eye-icon-wrap" [class.hidden-pass]="!showConfirm()">
+                <span class="icon-eye"><lucide-icon [img]="Eye" [size]="18"></lucide-icon></span>
+                <span class="icon-eye-off"><lucide-icon [img]="EyeClosed" [size]="18"></lucide-icon></span>
+              </span>
+            </button>
+          </div>
         </div>
         <button type="submit" class="submit-button">
           Change Password
@@ -92,9 +109,9 @@
     </div>
   </div>
 
-  <!-- Success Toast -->
+  <!-- Toast -->
   @if (message()) {
-    <div class="success-toast">
+    <div [class]="messageType() === 'success' ? 'success-toast' : 'error-toast'">
       {{message()}}
     </div>
   }

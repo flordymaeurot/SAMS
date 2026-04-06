@@ -34,6 +34,10 @@ export class SubjectsComponent {
   isStudent = this.roleService.isStudent;
   canManage = this.roleService.canManageOwnSubjects;
 
+  getInstructorName(instructorId: string): string {
+    return this.dataService.instructors().find(i => i.instructor_id === instructorId)?.full_name || instructorId;
+  }
+
   filteredSubjects = () => {
     const subjects = this.dataService.subjects();
     const user = this.authService.currentUser();
@@ -88,23 +92,45 @@ export class SubjectsComponent {
 
   async createSubject() {
     const user = this.authService.currentUser();
-    const instructor = this.dataService.instructors().find(i => i.user_id === user?.user_id);
-    
-    if (!instructor) {
-      await Swal.fire({
-        title: 'Error!',
-        text: 'Instructor profile not found',
-        icon: 'error'
+    if (!user) return;
+
+    let instructorId: string;
+
+    if (this.roleService.isAdmin()) {
+      // Admin must pick an instructor — for now use the first available, or require selection
+      // We'll use a prompt via Swal if there are instructors, otherwise block
+      const instructors = this.dataService.instructors();
+      if (instructors.length === 0) {
+        await Swal.fire({ title: 'No Instructors', text: 'Create an instructor account first before adding subjects.', icon: 'warning' });
+        return;
+      }
+      // Build options map
+      const options: Record<string, string> = {};
+      instructors.forEach(i => options[i.instructor_id] = i.full_name);
+      const { value: selectedId } = await Swal.fire({
+        title: 'Assign Instructor',
+        input: 'select',
+        inputOptions: options,
+        inputPlaceholder: 'Select an instructor',
+        showCancelButton: true,
+        confirmButtonText: 'Continue'
       });
-      return;
+      if (!selectedId) return;
+      instructorId = selectedId;
+    } else {
+      const instructor = this.dataService.instructors().find(i => i.user_id === user.user_id);
+      if (!instructor) {
+        await Swal.fire({ title: 'Error!', text: 'Instructor profile not found', icon: 'error' });
+        return;
+      }
+      instructorId = instructor.instructor_id;
     }
-    
+
     const subject: Subject = {
       subject_id: 'SUB' + Date.now(),
       subject_name: this.newSubject.subject_name,
       subject_code: this.newSubject.subject_code,
-      instructor_id: instructor.instructor_id,
-      instructor_name: instructor.full_name,
+      instructor_id: instructorId,
       grade_level: this.newSubject.grade_level,
       section: this.newSubject.section,
       schedule: this.newSubject.schedule
@@ -114,20 +140,9 @@ export class SubjectsComponent {
       await this.dataService.addSubject(subject);
       this.showCreateModal.set(false);
       this.newSubject = {};
-      
-      await Swal.fire({
-        title: 'Success!',
-        text: 'Subject created successfully',
-        icon: 'success',
-        timer: 2000,
-        showConfirmButton: false
-      });
-    } catch (error) {
-      await Swal.fire({
-        title: 'Error!',
-        text: 'Failed to create subject',
-        icon: 'error'
-      });
+      await Swal.fire({ title: 'Success!', text: 'Subject created successfully', icon: 'success', timer: 2000, showConfirmButton: false });
+    } catch {
+      await Swal.fire({ title: 'Error!', text: 'Failed to create subject', icon: 'error' });
     }
   }
 

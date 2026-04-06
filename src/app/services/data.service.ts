@@ -68,7 +68,8 @@ export class DataService {
 
   async updateUser(user: User) {
     try {
-      const updated = await firstValueFrom(this.http.put<User>(`${this.apiUrl}/users/${user.user_id}`, user));
+      const numericId = (user as any).id;
+      const updated = await firstValueFrom(this.http.put<User>(`${this.apiUrl}/users/${numericId}`, user));
       this.users.update(u => u.map(usr => usr.user_id === user.user_id ? updated : usr));
       return updated;
     } catch (error) {
@@ -79,37 +80,11 @@ export class DataService {
 
   async deleteUser(userId: string) {
     try {
-      console.log('Deleting user:', userId);
-      
-      // Find the numeric ID from the user object
       const user = this.users().find(u => u.user_id === userId);
-      if (!user) {
-        console.warn('User not found in local data:', userId);
-        throw new Error('User not found');
-      }
-      
+      if (!user) throw new Error('User not found');
       const numericId = (user as any).id;
-      console.log('Numeric ID:', numericId);
-      
-      try {
-        // Use numeric ID for JSON Server delete
-        await firstValueFrom(this.http.delete(`${this.apiUrl}/users/${numericId}`));
-        console.log('User deleted from server');
-      } catch (error: any) {
-        if (error?.status === 404) {
-          console.log('User not found on server (404), proceeding with UI removal');
-        } else {
-          throw error;
-        }
-      }
-      
-      // Update UI signal by user_id
-      console.log('Updating signal to remove user');
-      const beforeCount = this.users().length;
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/users/${numericId}`));
       this.users.update(u => u.filter(usr => usr.user_id !== userId));
-      const afterCount = this.users().length;
-      
-      console.log(`Signal updated: ${beforeCount} -> ${afterCount} users`);
       return true;
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -142,7 +117,8 @@ export class DataService {
 
   async updateStudent(student: Student) {
     try {
-      const updated = await firstValueFrom(this.http.put<Student>(`${this.apiUrl}/students/${student.student_id}`, student));
+      const numericId = (student as any).id;
+      const updated = await firstValueFrom(this.http.put<Student>(`${this.apiUrl}/students/${numericId}`, student));
       this.students.update(s => s.map(st => st.student_id === student.student_id ? updated : st));
       return updated;
     } catch (error) {
@@ -153,22 +129,10 @@ export class DataService {
 
   async deleteStudent(studentId: string) {
     try {
-      console.log('Deleting student:', studentId);
       const student = this.students().find(s => s.student_id === studentId);
-      if (!student || !(student as any).id) {
-        console.warn('Student not found:', studentId);
-        throw new Error('Student not found');
-      }
-      
-      await firstValueFrom(this.http.delete(`${this.apiUrl}/students/${(student as any).id}`)).catch((e: any) => {
-        if (e?.status === 404) {
-          console.log('Student not found on server (404)');
-        } else {
-          throw e;
-        }
-      });
+      if (!student || !(student as any).id) throw new Error('Student not found');
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/students/${(student as any).id}`));
       this.students.update(s => s.filter(st => st.student_id !== studentId));
-      console.log('Student deleted');
     } catch (error) {
       console.error('Error deleting student:', error);
       throw error;
@@ -212,15 +176,8 @@ export class DataService {
   async deleteSubject(id: string) {
     try {
       const subject = this.subjects().find(s => s.subject_id === id);
-      const deleteId = subject ? (subject as any).id || id : id;
-      
-      await firstValueFrom(this.http.delete(`${this.apiUrl}/subjects/${deleteId}`)).catch((e: any) => {
-        if (e?.status === 404) {
-          console.log('Subject not found on server (404)');
-        } else {
-          throw e;
-        }
-      });
+      if (!subject || !(subject as any).id) throw new Error('Subject not found');
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/subjects/${(subject as any).id}`));
       this.subjects.update(s => s.filter(sub => sub.subject_id !== id));
     } catch (error) {
       console.error('Error deleting subject:', error);
@@ -285,15 +242,8 @@ export class DataService {
   async unenrollStudent(enrollmentId: string) {
     try {
       const enrollment = this.enrollments().find(e => e.enrollment_id === enrollmentId);
-      const deleteId = enrollment ? (enrollment as any).id || enrollmentId : enrollmentId;
-      
-      await firstValueFrom(this.http.delete(`${this.apiUrl}/enrollments/${deleteId}`)).catch((e: any) => {
-        if (e?.status === 404) {
-          console.log('Enrollment not found on server (404)');
-        } else {
-          throw e;
-        }
-      });
+      if (!enrollment || !(enrollment as any).id) throw new Error('Enrollment not found');
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/enrollments/${(enrollment as any).id}`));
       this.enrollments.update(e => e.filter(enr => enr.enrollment_id !== enrollmentId));
     } catch (error) {
       console.error('Error unenrolling student:', error);
@@ -337,7 +287,8 @@ export class DataService {
 
   async updateInstructor(instructor: Instructor) {
     try {
-      const updated = await firstValueFrom(this.http.put<Instructor>(`${this.apiUrl}/instructors/${instructor.instructor_id}`, instructor));
+      const numericId = (instructor as any).id;
+      const updated = await firstValueFrom(this.http.put<Instructor>(`${this.apiUrl}/instructors/${numericId}`, instructor));
       this.instructors.update(i => i.map(inst => inst.instructor_id === instructor.instructor_id ? updated : inst));
       return updated;
     } catch (error) {
@@ -349,18 +300,8 @@ export class DataService {
   async deleteInstructor(instructorId: string) {
     try {
       const instructor = this.instructors().find(i => i.instructor_id === instructorId);
-      if (!instructor || !(instructor as any).id) {
-        console.warn('Instructor not found:', instructorId);
-        throw new Error('Instructor not found');
-      }
-      
-      await firstValueFrom(this.http.delete(`${this.apiUrl}/instructors/${(instructor as any).id}`)).catch((e: any) => {
-        if (e?.status === 404) {
-          console.log('Instructor not found on server (404)');
-        } else {
-          throw e;
-        }
-      });
+      if (!instructor || !(instructor as any).id) throw new Error('Instructor not found');
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/instructors/${(instructor as any).id}`));
       this.instructors.update(i => i.filter(inst => inst.instructor_id !== instructorId));
     } catch (error) {
       console.error('Error deleting instructor:', error);
@@ -393,7 +334,8 @@ export class DataService {
 
   async updateParent(parent: Parent) {
     try {
-      const updated = await firstValueFrom(this.http.put<Parent>(`${this.apiUrl}/parents/${parent.parent_id}`, parent));
+      const numericId = (parent as any).id;
+      const updated = await firstValueFrom(this.http.put<Parent>(`${this.apiUrl}/parents/${numericId}`, parent));
       this.parents.update(p => p.map(par => par.parent_id === parent.parent_id ? updated : par));
       return updated;
     } catch (error) {
@@ -405,18 +347,8 @@ export class DataService {
   async deleteParent(parentId: string) {
     try {
       const parent = this.parents().find(p => p.parent_id === parentId);
-      if (!parent || !(parent as any).id) {
-        console.warn('Parent not found:', parentId);
-        throw new Error('Parent not found');
-      }
-      
-      await firstValueFrom(this.http.delete(`${this.apiUrl}/parents/${(parent as any).id}`)).catch((e: any) => {
-        if (e?.status === 404) {
-          console.log('Parent not found on server (404)');
-        } else {
-          throw e;
-        }
-      });
+      if (!parent || !(parent as any).id) throw new Error('Parent not found');
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/parents/${(parent as any).id}`));
       this.parents.update(p => p.filter(par => par.parent_id !== parentId));
     } catch (error) {
       console.error('Error deleting parent:', error);

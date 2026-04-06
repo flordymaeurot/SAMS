@@ -21,7 +21,9 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Recent Attendance -->
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 hover:shadow-lg transition-shadow duration-200">
-      <h3 class="text-xl font-bold text-slate-800 mb-4">Recent Attendance</h3>
+      <h3 class="text-xl font-bold text-slate-800 mb-4">
+        @if (isStudent() || isParent()) { Recent Attendance } @else { Recent Attendance }
+      </h3>
       @if (recentAttendance().length > 0) {
         <div class="space-y-3">
           @for (record of recentAttendance(); track record.attendance_id) {
@@ -42,7 +44,7 @@
             <lucide-icon [img]="ClipboardList" [size]="64"></lucide-icon>
           </div>
           <p class="text-lg font-semibold text-slate-800 mb-2">No attendance records yet</p>
-          <p class="text-slate-500 mb-6">Start taking attendance to see records here</p>
+          <p class="text-slate-500 mb-6">No records to display at this time</p>
           @if (canTakeAttendance()) {
             <a routerLink="/take-attendance" 
                class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg px-6 py-3 font-medium transition-all duration-200">
@@ -53,7 +55,7 @@
       }
     </div>
 
-    <!-- Quick Actions -->
+    <!-- Quick Actions (instructor/admin only) -->
     @if (showQuickActions()) {
       <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 hover:shadow-lg transition-shadow duration-200">
         <h3 class="text-xl font-bold text-slate-800 mb-4">Quick Actions</h3>
@@ -103,13 +105,58 @@
         </div>
       </div>
     }
+
+    <!-- Student quick links -->
+    @if (isStudent()) {
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 hover:shadow-lg transition-shadow duration-200">
+        <h3 class="text-xl font-bold text-slate-800 mb-4">Quick Actions</h3>
+        <div class="space-y-3">
+          <a routerLink="/take-attendance"
+             class="flex items-center gap-4 p-4 border border-slate-200 rounded-lg hover:bg-amber-50 hover:border-amber-300 transition-all duration-200 group">
+            <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
+              <lucide-icon [img]="CalendarIcon" [size]="24"></lucide-icon>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-slate-800">Scan QR Code</p>
+              <p class="text-sm text-slate-500">Mark your attendance</p>
+            </div>
+          </a>
+          <a routerLink="/attendance-records"
+             class="flex items-center gap-4 p-4 border border-slate-200 rounded-lg hover:bg-sky-50 hover:border-sky-300 transition-all duration-200 group">
+            <div class="w-12 h-12 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center group-hover:bg-sky-600 group-hover:text-white transition-colors">
+              <lucide-icon [img]="ClipboardList" [size]="24"></lucide-icon>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-slate-800">My Attendance Records</p>
+              <p class="text-sm text-slate-500">View your attendance history</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    }
+
+    <!-- Parent quick links -->
+    @if (isParent()) {
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 hover:shadow-lg transition-shadow duration-200">
+        <h3 class="text-xl font-bold text-slate-800 mb-4">Quick Actions</h3>
+        <div class="space-y-3">
+          <a routerLink="/attendance-records"
+             class="flex items-center gap-4 p-4 border border-slate-200 rounded-lg hover:bg-amber-50 hover:border-amber-300 transition-all duration-200 group">
+            <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
+              <lucide-icon [img]="ClipboardList" [size]="24"></lucide-icon>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-slate-800">My Child's Records</p>
+              <p class="text-sm text-slate-500">View attendance history</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    }
   </div>
 
-  <!-- Compact Calendar Widget -->
+  <!-- Calendar -->
   <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 hover:shadow-lg transition-shadow duration-200">
-    <h3 class="text-lg font-bold text-slate-800 mb-3">Calendar</h3>
-    <div class="max-w-xs mx-auto">
-      <dashboard-calendar></dashboard-calendar>
-    </div>
+    <app-calendar></app-calendar>
   </div>
 </div>

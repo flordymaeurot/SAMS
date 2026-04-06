@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { LucideAngularModule, CheckCircle2, AlertCircle, ArrowRight } from 'lucide-angular';
+import { LucideAngularModule, CheckCircle2, AlertCircle, ArrowRight, Eye, EyeClosed } from 'lucide-angular';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +21,10 @@ export class LoginComponent {
   readonly CheckCircle2 = CheckCircle2;
   readonly AlertCircle = AlertCircle;
   readonly ArrowRight = ArrowRight;
+  readonly Eye = Eye;
+  readonly EyeClosed = EyeClosed;
+
+  showPassword = signal(false);
 
   constructor(private authService: AuthService) {}
 

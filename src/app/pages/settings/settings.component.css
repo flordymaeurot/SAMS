@@ -144,3 +144,80 @@ h3 {
     bottom: 1rem;
   }
 }
+
+/* Eye toggle animation */
+.eye-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+}
+
+.eye-toggle:hover {
+  color: #64748b;
+}
+
+.eye-icon-wrap {
+  position: relative;
+  width: 18px;
+  height: 18px;
+}
+
+.eye-icon-wrap .icon-eye,
+.eye-icon-wrap .icon-eye-off {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.eye-icon-wrap .icon-eye {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.eye-icon-wrap .icon-eye-off {
+  opacity: 0;
+  transform: scale(0.5) rotate(15deg);
+}
+
+.eye-icon-wrap.hidden-pass .icon-eye {
+  opacity: 0;
+  transform: scale(0.5) rotate(-15deg);
+}
+
+.eye-icon-wrap.hidden-pass .icon-eye-off {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.settings-card form > div {
+  position: relative;
+}
+
+.error-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: #ef4444;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  animation: slideUp 0.3s ease-out;
+  z-index: 1000;
+}

@@ -73,11 +73,13 @@ export class LayoutComponent {
   menuItems = () => {
     const role = this.currentUser()?.role;
     const items = [
-      { path: '/dashboard', label: 'Dashboard', icon: 'LayoutDashboard', roles: ['admin', 'instructor'] },
+      { path: '/dashboard', label: 'Dashboard', icon: 'LayoutDashboard', roles: ['admin', 'instructor', 'student', 'parent'] },
       { path: '/accounts', label: 'Accounts', icon: 'Users', roles: ['admin'] },
+      { path: '/departments', label: 'Departments', icon: 'Building2', roles: ['admin'] },
       { path: '/departments', label: 'Departments', icon: 'Building2', roles: ['admin'] },
       { path: '/subjects', label: role === 'student' ? 'My Subjects' : 'Subjects', icon: 'BookOpen', roles: ['instructor', 'student'] },
       { path: '/take-attendance', label: 'Take Attendance', icon: 'ClipboardList', roles: ['instructor'] },
+      { path: '/take-attendance', label: 'Scan QR', icon: 'ClipboardList', roles: ['student'] },
       { path: '/attendance-records', label: role === 'parent' ? "My Child's Records" : 'Attendance Records', icon: 'ClipboardList', roles: ['admin', 'instructor', 'student', 'parent'] },
       { path: '/create-account', label: 'Create Account', icon: 'UserPlus', roles: ['admin', 'instructor'] },
       { path: '/reports', label: 'Reports', icon: 'BarChart3', roles: ['admin', 'instructor'] },

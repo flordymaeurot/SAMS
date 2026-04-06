@@ -46,6 +46,14 @@ export class SubjectDetailComponent {
     return this.dataService.subjects().find(s => s.subject_id === this.subjectId);
   });
 
+  getInstructorName(instructorId: string): string {
+    return this.dataService.instructors().find(i => i.instructor_id === instructorId)?.full_name || instructorId;
+  }
+
+  getStudentName(studentId: string): string {
+    return this.dataService.students().find(s => s.student_id === studentId)?.full_name || studentId;
+  }
+
   enrollments = computed(() => {
     return this.dataService.enrollments().filter(e => e.subject_id === this.subjectId);
   });
@@ -70,8 +78,6 @@ export class SubjectDetailComponent {
       enrollment_id: 'E' + Date.now(),
       subject_id: this.subjectId,
       student_id: student.student_id,
-      student_name: student.full_name,
-      subject_name: subject.subject_name,
       enrolled_date: new Date()
     };
 

@@ -61,7 +61,7 @@ export interface Subject {
   subject_name: string;
   subject_code: string;
   instructor_id: string;
-  instructor_name: string;
+  instructor_name?: string; // deprecated - use instructor_id to look up
   grade_level: string;
   section: string;
   schedule: string;
@@ -72,8 +72,8 @@ export interface SubjectEnrollment {
   enrollment_id: string;
   subject_id: string;
   student_id: string;
-  student_name: string;
-  subject_name: string;
+  student_name?: string; // deprecated - use student_id to look up
+  subject_name?: string; // deprecated - use subject_id to look up
   enrolled_date: Date;
 }
 

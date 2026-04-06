@@ -6,7 +6,7 @@ import { DataService } from '../../services/data.service';
 import { AuthService } from '../../services/auth.service';
 import { RoleService } from '../../services/role.service';
 import { Attendance } from '../../models/user.model';
-import { LucideAngularModule, Users, QrCode, Camera, CheckCircle2, XCircle, AlertCircle, RotateCcw, BookOpen } from 'lucide-angular';
+import { LucideAngularModule, Users, QrCode, CheckCircle2, XCircle, AlertCircle, RotateCcw, BookOpen } from 'lucide-angular';
 import Swal from 'sweetalert2';
 import { QrCodeGeneratorComponent } from './qr-code-generator.component';
 import { QrCodeScannerComponent } from './qr-code-scanner.component';
@@ -27,7 +27,6 @@ export class TakeAttendanceComponent implements OnInit {
   // Lucide icons
   readonly Users = Users;
   readonly QrCode = QrCode;
-  readonly Camera = Camera;
   readonly CheckCircle2 = CheckCircle2;
   readonly XCircle = XCircle;
   readonly AlertCircle = AlertCircle;
@@ -35,11 +34,10 @@ export class TakeAttendanceComponent implements OnInit {
   readonly BookOpen = BookOpen;
   
   selectedSubjectId = '';
-  scannerActive = signal(false);
   manualStudentId = '';
   message = signal('');
   messageType = signal<'success' | 'error'>('success');
-  attendanceMode = signal<'manual' | 'qr-generate' | 'qr-scan'>('manual');
+  attendanceMode = signal<'manual' | 'qr-generate'>('manual');
 
   subjects = this.dataService.subjects;
   canTakeAttendance = this.roleService.canTakeAttendance;
@@ -78,15 +76,6 @@ export class TakeAttendanceComponent implements OnInit {
   }
 
   onSubjectChange() {
-    this.scannerActive.set(false);
-  }
-
-  startScanner() {
-    this.scannerActive.set(true);
-  }
-
-  stopScanner() {
-    this.scannerActive.set(false);
   }
 
   markAttendanceManual() {

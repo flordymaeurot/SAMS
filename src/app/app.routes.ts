@@ -6,7 +6,6 @@ import { SubjectsComponent } from './pages/subjects/subjects.component';
 import { SubjectDetailComponent } from './pages/subject-detail/subject-detail.component';
 import { TakeAttendanceComponent } from './pages/take-attendance/take-attendance.component';
 import { AttendanceRecordsComponent } from './pages/attendance-records/attendance-records.component';
-import { CalendarComponent } from './pages/calendar/calendar.component';
 import { CreateAccountComponent } from './pages/create-account/create-account.component';
 import { ReportsComponent } from './pages/reports/reports.component';
 import { SettingsComponent } from './pages/settings/settings.component';
@@ -22,14 +21,13 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent, canActivate: [roleGuard(['admin', 'instructor'])] },
+      { path: 'dashboard', component: DashboardComponent, canActivate: [roleGuard(['admin', 'instructor', 'student', 'parent'])] },
       { path: 'accounts', component: AccountsComponent, canActivate: [roleGuard(['admin'])] },
       { path: 'departments', component: DepartmentsComponent, canActivate: [roleGuard(['admin'])] },
       { path: 'subjects', component: SubjectsComponent, canActivate: [roleGuard(['admin', 'instructor', 'student'])] },
       { path: 'subject/:id', component: SubjectDetailComponent, data: { renderMode: 'client' } },
       { path: 'take-attendance', component: TakeAttendanceComponent, canActivate: [roleGuard(['instructor', 'student'])] },
       { path: 'attendance-records', component: AttendanceRecordsComponent },
-      { path: 'calendar', component: CalendarComponent },
       { path: 'create-account', component: CreateAccountComponent, canActivate: [roleGuard(['admin', 'instructor'])] },
       { path: 'reports', component: ReportsComponent, canActivate: [roleGuard(['admin', 'instructor'])] },
       { path: 'settings', component: SettingsComponent }

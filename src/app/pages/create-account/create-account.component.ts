@@ -56,9 +56,13 @@ export class CreateAccountComponent {
 
   async onInstructorSubmit(instructor: Instructor) {
     try {
-      console.log('Creating instructor account...');
-      
-      // Create user account first
+      // Check for duplicate email
+      const emailExists = this.dataService.users().some(u => u.email === instructor.email);
+      if (emailExists) {
+        await Swal.fire({ title: 'Email already exists', text: 'An account with this email already exists.', icon: 'error' });
+        return;
+      }
+
       const userId = generateUniqueId('U');
       const user = {
         user_id: userId,
@@ -113,8 +117,17 @@ export class CreateAccountComponent {
 
   async onStudentSubmit(data: StudentFormData) {
     try {
-      console.log('Creating student account...');
-      
+      // Check for duplicate emails
+      const existingEmails = this.dataService.users().map(u => u.email);
+      if (existingEmails.includes(data.student.email)) {
+        await Swal.fire({ title: 'Email already exists', text: `Student email "${data.student.email}" is already in use.`, icon: 'error' });
+        return;
+      }
+      if (existingEmails.includes(data.parent.email)) {
+        await Swal.fire({ title: 'Email already exists', text: `Parent email "${data.parent.email}" is already in use.`, icon: 'error' });
+        return;
+      }
+
       const studentUserId = generateUniqueId('U');
       const studentUser: any = {
         user_id: studentUserId,

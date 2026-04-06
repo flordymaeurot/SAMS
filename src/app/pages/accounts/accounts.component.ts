@@ -231,13 +231,8 @@ export class AccountsComponent {
 
     try {
       const userId = account.user_id;
-      
-      console.log('Starting deletion process for:', userId);
-      
-      // Close modal first
       this.closeModal();
 
-      // Delete related records in parallel
       const deleteOps: Promise<any>[] = [];
 
       if (account.role === 'instructor') {
@@ -245,61 +240,33 @@ export class AccountsComponent {
         if (instructor) {
           const subjects = this.dataService.subjects().filter(s => s.instructor_id === instructor.instructor_id);
           for (const subject of subjects) {
-            deleteOps.push(this.dataService.deleteSubject(subject.subject_id).catch(e => console.warn('Subject delete failed:', e)));
+            deleteOps.push(this.dataService.deleteSubject(subject.subject_id).catch(() => {}));
           }
-          deleteOps.push(this.dataService.deleteInstructor(instructor.instructor_id).catch(e => console.warn('Instructor delete failed:', e)));
+          deleteOps.push(this.dataService.deleteInstructor(instructor.instructor_id).catch(() => {}));
         }
       } else if (account.role === 'student') {
         const student = this.dataService.students().find(s => s.user_id === userId);
         if (student) {
           const parent = this.dataService.parents().find(p => p.student_id === student.student_id);
           if (parent) {
-            deleteOps.push(this.dataService.deleteParent(parent.parent_id).catch(e => console.warn('Parent delete failed:', e)));
-            deleteOps.push(this.dataService.deleteUser(parent.user_id).catch(e => console.warn('Parent user delete failed:', e)));
+            deleteOps.push(this.dataService.deleteParent(parent.parent_id).catch(() => {}));
+            deleteOps.push(this.dataService.deleteUser(parent.user_id).catch(() => {}));
           }
-          deleteOps.push(this.dataService.deleteStudent(student.student_id).catch(e => console.warn('Student delete failed:', e)));
+          deleteOps.push(this.dataService.deleteStudent(student.student_id).catch(() => {}));
         }
       } else if (account.role === 'parent') {
         const parent = this.dataService.parents().find(p => p.user_id === userId);
         if (parent) {
-          deleteOps.push(this.dataService.deleteParent(parent.parent_id).catch(e => console.warn('Parent delete failed:', e)));
+          deleteOps.push(this.dataService.deleteParent(parent.parent_id).catch(() => {}));
         }
       }
 
-      // Execute related deletes
-      if (deleteOps.length > 0) {
-        await Promise.all(deleteOps);
-      }
-
-      // Delete main user account - DO NOT CATCH ERRORS
-      console.log('Deleting main user account:', userId);
+      if (deleteOps.length > 0) await Promise.all(deleteOps);
       await this.dataService.deleteUser(userId);
-      console.log('User deleted successfully');
 
-      // Verify deletion by checking if user is gone
-      const userStillExists = this.dataService.users().some(u => u.user_id === userId);
-      if (userStillExists) {
-        console.error('ERROR: User still exists after deletion!');
-        throw new Error('Deletion failed: user still in database');
-      }
-
-      console.log('Deletion verified - user is gone');
-
-      await Swal.fire({
-        title: 'Deleted!',
-        text: 'Account deleted successfully.',
-        icon: 'success',
-        timer: 1000,
-        showConfirmButton: false
-      });
-
+      await Swal.fire({ title: 'Deleted!', text: 'Account deleted successfully.', icon: 'success', timer: 1000, showConfirmButton: false });
     } catch (error: any) {
-      console.error('Delete error:', error);
-      await Swal.fire({
-        title: 'Error!',
-        text: error?.message || 'Failed to delete account. Check console for details.',
-        icon: 'error'
-      });
+      await Swal.fire({ title: 'Error!', text: error?.message || 'Failed to delete account.', icon: 'error' });
     }
   }
 }

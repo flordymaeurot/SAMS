@@ -1,6 +1,7 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataService } from '../../services/data.service';
+import { AuthService } from '../../services/auth.service';
 import { LucideAngularModule, ChevronLeft, ChevronRight, X, Calendar } from 'lucide-angular';
 
 @Component({
@@ -14,13 +15,30 @@ export class CalendarComponent {
   currentDate = signal(new Date());
   selectedDay = signal<any>(null);
 
-  // Lucide icons
   readonly ChevronLeft = ChevronLeft;
   readonly ChevronRight = ChevronRight;
   readonly X = X;
   readonly Calendar = Calendar;
 
-  constructor(private dataService: DataService) {}
+  private dataService = inject(DataService);
+  private authService = inject(AuthService);
+
+  // Role-filtered attendance
+  private roleAttendance = computed(() => {
+    const user = this.authService.currentUser();
+    let records = this.dataService.attendance();
+    if (user?.role === 'student') {
+      const student = this.dataService.students().find(s => s.user_id === user.user_id);
+      if (student) records = records.filter(a => a.student_id === student.student_id);
+    } else if (user?.role === 'parent') {
+      const parent = this.dataService.parents().find(p => p.user_id === user.user_id);
+      if (parent) records = records.filter(a => a.student_id === parent.student_id);
+    } else if (user?.role === 'instructor') {
+      const instructor = this.dataService.instructors().find(i => i.user_id === user.user_id);
+      if (instructor) records = records.filter(a => a.instructor_id === instructor.instructor_id);
+    }
+    return records;
+  });
 
   currentMonthYear = computed(() => {
     const date = this.currentDate();
@@ -31,9 +49,7 @@ export class CalendarComponent {
     const date = this.currentDate();
     const year = date.getFullYear();
     const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const startDate = new Date(firstDay);
+    const startDate = new Date(year, month, 1);
     startDate.setDate(startDate.getDate() - startDate.getDay());
 
     const days = [];
@@ -41,7 +57,7 @@ export class CalendarComponent {
 
     for (let i = 0; i < 42; i++) {
       const dateStr = currentDate.toDateString();
-      const attendanceCount = this.dataService.attendance()
+      const attendanceCount = this.roleAttendance()
         .filter(a => new Date(a.date).toDateString() === dateStr).length;
 
       days.push({
@@ -60,7 +76,7 @@ export class CalendarComponent {
     const day = this.selectedDay();
     if (!day) return [];
     const dateStr = day.date.toDateString();
-    return this.dataService.attendance()
+    return this.roleAttendance()
       .filter(a => new Date(a.date).toDateString() === dateStr);
   });
 

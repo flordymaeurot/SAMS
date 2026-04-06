@@ -6,11 +6,12 @@ import { AuthService } from '../../services/auth.service';
 import { RoleService } from '../../services/role.service';
 import { LucideAngularModule, Users, BookOpen, TrendingUp, UserX, ClipboardList, Calendar } from 'lucide-angular';
 import { DashboardCalendarComponent } from '../calendar/dashboard-calendar.component';
+import { CalendarComponent } from '../calendar/calendar.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, LucideAngularModule, DashboardCalendarComponent],
+  imports: [CommonModule, RouterModule, LucideAngularModule, DashboardCalendarComponent, CalendarComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -28,6 +29,8 @@ export class DashboardComponent {
   readonly CalendarIcon = Calendar;
 
   canTakeAttendance = this.roleService.canTakeAttendance;
+  isStudent = this.roleService.isStudent;
+  isParent = this.roleService.isParent;
   showQuickActions = computed(() => {
     const role = this.authService.currentUser()?.role;
     return role === 'admin' || role === 'instructor';
@@ -51,7 +54,6 @@ export class DashboardComponent {
     let subjects = this.dataService.subjects();
     let attendance = this.dataService.attendance();
     
-    // Filter data for instructors - only show their own data
     if (role === 'instructor' && user) {
       const instructor = this.dataService.instructors().find(i => i.user_id === user.user_id);
       if (instructor) {
@@ -59,6 +61,34 @@ export class DashboardComponent {
         students = students.filter(st => st.instructor_id === instructor.instructor_id);
         attendance = attendance.filter(a => a.instructor_id === instructor.instructor_id);
       }
+    } else if (role === 'student' && user) {
+      const student = this.dataService.students().find(s => s.user_id === user.user_id);
+      if (student) {
+        attendance = attendance.filter(a => a.student_id === student.student_id);
+      }
+      const presentCount = attendance.filter(a => a.status === 'Present').length;
+      const attendanceRate = attendance.length > 0 ? Math.round((presentCount / attendance.length) * 100) : 0;
+      const absentCount = attendance.filter(a => a.status === 'Absent').length;
+      return [
+        { label: 'My Subjects', value: this.dataService.enrollments().filter(e => e.student_id === student?.student_id).length, icon: 'BookOpen', bgColor: 'bg-amber-100', textColor: 'text-amber-600' },
+        { label: 'Total Records', value: attendance.length, icon: 'ClipboardList', bgColor: 'bg-orange-100', textColor: 'text-orange-600' },
+        { label: 'Attendance Rate', value: attendanceRate + '%', icon: 'TrendingUp', bgColor: 'bg-emerald-100', textColor: 'text-emerald-600' },
+        { label: 'Absences', value: absentCount, icon: 'UserX', bgColor: 'bg-red-100', textColor: 'text-red-600' }
+      ];
+    } else if (role === 'parent' && user) {
+      const parent = this.dataService.parents().find(p => p.user_id === user.user_id);
+      if (parent) {
+        attendance = attendance.filter(a => a.student_id === parent.student_id);
+      }
+      const presentCount = attendance.filter(a => a.status === 'Present').length;
+      const attendanceRate = attendance.length > 0 ? Math.round((presentCount / attendance.length) * 100) : 0;
+      const absentCount = attendance.filter(a => a.status === 'Absent').length;
+      return [
+        { label: "Child's Records", value: attendance.length, icon: 'ClipboardList', bgColor: 'bg-amber-100', textColor: 'text-amber-600' },
+        { label: 'Present', value: presentCount, icon: 'TrendingUp', bgColor: 'bg-emerald-100', textColor: 'text-emerald-600' },
+        { label: 'Attendance Rate', value: attendanceRate + '%', icon: 'TrendingUp', bgColor: 'bg-orange-100', textColor: 'text-orange-600' },
+        { label: 'Absences', value: absentCount, icon: 'UserX', bgColor: 'bg-red-100', textColor: 'text-red-600' }
+      ];
     }
     
     const totalAttendance = attendance.length;
@@ -69,34 +99,10 @@ export class DashboardComponent {
     ).length;
 
     return [
-      { 
-        label: 'Total Students', 
-        value: students.length, 
-        icon: 'Users', 
-        bgColor: 'bg-amber-100',
-        textColor: 'text-amber-600'
-      },
-      { 
-        label: 'Total Subjects', 
-        value: subjects.length, 
-        icon: 'BookOpen', 
-        bgColor: 'bg-orange-100',
-        textColor: 'text-orange-600'
-      },
-      { 
-        label: 'Attendance Rate', 
-        value: attendanceRate + '%', 
-        icon: 'TrendingUp', 
-        bgColor: 'bg-emerald-100',
-        textColor: 'text-emerald-600'
-      },
-      { 
-        label: 'Absent Today', 
-        value: absentToday, 
-        icon: 'UserX', 
-        bgColor: 'bg-red-100',
-        textColor: 'text-red-600'
-      }
+      { label: 'Total Students', value: students.length, icon: 'Users', bgColor: 'bg-amber-100', textColor: 'text-amber-600' },
+      { label: 'Total Subjects', value: subjects.length, icon: 'BookOpen', bgColor: 'bg-orange-100', textColor: 'text-orange-600' },
+      { label: 'Attendance Rate', value: attendanceRate + '%', icon: 'TrendingUp', bgColor: 'bg-emerald-100', textColor: 'text-emerald-600' },
+      { label: 'Absent Today', value: absentToday, icon: 'UserX', bgColor: 'bg-red-100', textColor: 'text-red-600' }
     ];
   });
 
@@ -105,11 +111,20 @@ export class DashboardComponent {
     const user = this.authService.currentUser();
     let attendance = this.dataService.attendance();
     
-    // Filter attendance for instructors
     if (role === 'instructor' && user) {
       const instructor = this.dataService.instructors().find(i => i.user_id === user.user_id);
       if (instructor) {
         attendance = attendance.filter(a => a.instructor_id === instructor.instructor_id);
+      }
+    } else if (role === 'student' && user) {
+      const student = this.dataService.students().find(s => s.user_id === user.user_id);
+      if (student) {
+        attendance = attendance.filter(a => a.student_id === student.student_id);
+      }
+    } else if (role === 'parent' && user) {
+      const parent = this.dataService.parents().find(p => p.user_id === user.user_id);
+      if (parent) {
+        attendance = attendance.filter(a => a.student_id === parent.student_id);
       }
     }
     

@@ -43,64 +43,74 @@
   </div>
 
   <!-- Stats Cards -->
-  <div class="stats-grid">
-    @for (stat of statusStats(); track stat.label) {
-      <div class="stat-card">
-        <p class="stat-label">{{stat.label}}</p>
-        <p class="stat-value" [style.color]="stat.color">{{stat.value}}</p>
-        <p class="stat-percentage">{{stat.percentage}}% of total</p>
-      </div>
-    }
-  </div>
-
-  <!-- Charts -->
-  <div class="charts-grid">
-    <!-- Bar Chart -->
-    <div class="chart-card">
-      <h3>Attendance by Status</h3>
-      <div class="bar-chart">
-        @for (item of statusStats(); track item.label) {
-          <div>
-            <div class="bar-item-header">
-              <span>{{item.label}}</span>
-              <span class="bar-item-value">{{item.value}}</span>
-            </div>
-            <div class="bar-track">
-              <div [style.width.%]="item.percentage" 
-                   [style.background-color]="item.color"
-                   class="bar-fill"></div>
-            </div>
-          </div>
-        }
-      </div>
+  @if (filteredRecords().length > 0) {
+    <div class="stats-grid">
+      @for (stat of statusStats(); track stat.label) {
+        <div class="stat-card">
+          <p class="stat-label">{{stat.label}}</p>
+          <p class="stat-value" [style.color]="stat.color">{{stat.value}}</p>
+          <p class="stat-percentage">{{stat.percentage}}% of total</p>
+        </div>
+      }
     </div>
 
-    <!-- Distribution Chart -->
-    <div class="chart-card">
-      <h3>Status Distribution</h3>
-      <div class="pie-container">
-        <div class="pie-visual">
-          @for (item of statusStats(); track item.label; let i = $index) {
-            <div class="pie-ring">
-              <div [style.width.px]="180 - (i * 30)" 
-                   [style.height.px]="180 - (i * 30)"
-                   [style.background-color]="item.color"
-                   class="pie-circle"></div>
+    <!-- Charts -->
+    <div class="charts-grid">
+      <!-- Bar Chart -->
+      <div class="chart-card">
+        <h3>Attendance by Status</h3>
+        <div class="bar-chart">
+          @for (item of statusStats(); track item.label) {
+            <div>
+              <div class="bar-item-header">
+                <span>{{item.label}}</span>
+                <span class="bar-item-value">{{item.value}}</span>
+              </div>
+              <div class="bar-track">
+                <div [style.width.%]="item.percentage"
+                     [style.background-color]="item.color"
+                     class="bar-fill"></div>
+              </div>
             </div>
           }
         </div>
       </div>
-      <div class="legend">
-        @for (item of statusStats(); track item.label) {
-          <div class="legend-item">
-            <div class="legend-label">
-              <div [style.background-color]="item.color" class="legend-color"></div>
-              <span class="legend-text">{{item.label}}</span>
-            </div>
-            <span class="legend-value">{{item.percentage}}%</span>
+
+      <!-- Distribution Chart -->
+      <div class="chart-card">
+        <h3>Status Distribution</h3>
+        <div class="pie-container">
+          <div class="pie-visual">
+            @for (item of statusStats(); track item.label; let i = $index) {
+              <div class="pie-ring">
+                <div [style.width.px]="180 - (i * 30)"
+                     [style.height.px]="180 - (i * 30)"
+                     [style.background-color]="item.color"
+                     class="pie-circle"></div>
+              </div>
+            }
           </div>
-        }
+        </div>
+        <div class="legend">
+          @for (item of statusStats(); track item.label) {
+            <div class="legend-item">
+              <div class="legend-label">
+                <div [style.background-color]="item.color" class="legend-color"></div>
+                <span class="legend-text">{{item.label}}</span>
+              </div>
+              <span class="legend-value">{{item.percentage}}%</span>
+            </div>
+          }
+        </div>
       </div>
     </div>
-  </div>
+  } @else {
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-16 text-center">
+      <svg class="w-16 h-16 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      <p class="text-lg font-semibold text-slate-800 mb-1">No data for this period</p>
+      <p class="text-slate-500">Try adjusting the subject or date range filters</p>
+    </div>
+  }
 </div>

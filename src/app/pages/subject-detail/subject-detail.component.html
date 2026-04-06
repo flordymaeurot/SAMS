@@ -7,7 +7,7 @@
         <p class="subject-code">{{subject()!.subject_code}}</p>
         <p style="color: #64748b; font-size: 0.875rem; margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
           <lucide-icon [img]="UserCircle" [size]="16"></lucide-icon>
-          <span>{{subject()!.instructor_name}} • Grade {{subject()!.grade_level}} - Section {{subject()!.section}}</span>
+          <span>{{getInstructorName(subject()!.instructor_id)}} • Grade {{subject()!.grade_level}} - Section {{subject()!.section}}</span>
         </p>
       </div>
       @if (canTakeAttendance()) {
@@ -57,7 +57,7 @@
               @for (enrollment of enrollments(); track enrollment.enrollment_id) {
                 <div class="list-item">
                   <div class="list-item-info">
-                    <p class="student-name">{{enrollment.student_name}}</p>
+                    <p class="student-name">{{getStudentName(enrollment.student_id)}}</p>
                     <p class="student-details">Enrolled: {{formatDate(enrollment.enrolled_date)}}</p>
                   </div>
                   @if (canUnenrollStudent(enrollment)) {

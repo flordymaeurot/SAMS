@@ -21,11 +21,28 @@ export class ReportsComponent {
   dateRange = '30';
   selectedMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
 
-  subjects = this.dataService.subjects;
+  subjects = computed(() => {
+    const user = this.authService.currentUser();
+    const all = this.dataService.subjects();
+    if (user?.role === 'instructor') {
+      const instructor = this.dataService.instructors().find(i => i.user_id === user.user_id);
+      return instructor ? all.filter(s => s.instructor_id === instructor.instructor_id) : [];
+    }
+    return all;
+  });
 
   filteredRecords = computed(() => {
+    const user = this.authService.currentUser();
     let records = this.dataService.attendance();
-    
+
+    // Instructors only see their own subjects
+    if (user?.role === 'instructor') {
+      const instructor = this.dataService.instructors().find(i => i.user_id === user.user_id);
+      if (instructor) {
+        records = records.filter(r => r.instructor_id === instructor.instructor_id);
+      }
+    }
+
     if (this.filterSubject) {
       records = records.filter(r => r.subject_id === this.filterSubject);
     }

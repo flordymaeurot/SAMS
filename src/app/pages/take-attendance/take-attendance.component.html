@@ -5,7 +5,14 @@
     <p>Mark student attendance via QR code or manually</p>
   </div>
 
-  <!-- Subject Selection -->
+  <!-- Students: skip subject selector, go straight to scanner -->
+  @if (isStudent()) {
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+      <app-qr-code-scanner></app-qr-code-scanner>
+    </div>
+  } @else {
+
+  <!-- Subject Selection (Instructors only) -->
   <div class="subject-selector-card">
     <div class="selector-header">
       <div class="selector-label">
@@ -52,7 +59,7 @@
             <p class="selected-meta">{{getSelectedSubject()?.subject_code}} • Grade {{getSelectedSubject()?.grade_level}} - Section {{getSelectedSubject()?.section}}</p>
           </div>
         </div>
-        <button (click)="selectedSubjectId = ''; scannerActive.set(false)" class="change-subject-btn">
+        <button (click)="selectedSubjectId = ''" class="change-subject-btn">
           Change Subject
         </button>
       </div>
@@ -60,149 +67,90 @@
   </div>
 
   @if (selectedSubjectId) {
-    <!-- Attendance Mode Tabs (for Instructors Only) -->
-    @if (canTakeAttendance()) {
-      <div class="attendance-tabs">
-        <button 
-          [class.tab-active]="attendanceMode() === 'manual'"
-          (click)="attendanceMode.set('manual')"
-          class="tab-button">
-          <lucide-icon [img]="Users" [size]="18"></lucide-icon>
-          Manual Entry
-        </button>
-        <button 
-          [class.tab-active]="attendanceMode() === 'qr-generate'"
-          (click)="attendanceMode.set('qr-generate')"
-          class="tab-button">
-          <lucide-icon [img]="QrCode" [size]="18"></lucide-icon>
-          Generate QR
-        </button>
-        <button 
-          [class.tab-active]="attendanceMode() === 'qr-scan'"
-          (click)="attendanceMode.set('qr-scan')"
-          class="tab-button">
-          <lucide-icon [img]="Camera" [size]="18"></lucide-icon>
-          Monitor Scans
-        </button>
-      </div>
-    } @else {
-      <!-- Students Only See Scan QR Tab -->
-      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-        <h3 class="text-lg font-bold text-slate-800 mb-4">Scan QR Code to Mark Attendance</h3>
-        <app-qr-code-scanner></app-qr-code-scanner>
-      </div>
-    }
+    <div class="attendance-tabs">
+      <button 
+        [class.tab-active]="attendanceMode() === 'manual'"
+        (click)="attendanceMode.set('manual')"
+        class="tab-button">
+        <lucide-icon [img]="Users" [size]="18"></lucide-icon>
+        Manual Entry
+      </button>
+      <button 
+        [class.tab-active]="attendanceMode() === 'qr-generate'"
+        (click)="attendanceMode.set('qr-generate')"
+        class="tab-button">
+        <lucide-icon [img]="QrCode" [size]="18"></lucide-icon>
+        Generate QR
+      </button>
+    </div>
 
-    <!-- Manual Attendance Mode (Instructors Only) -->
-    @if (attendanceMode() === 'manual' && canTakeAttendance()) {
+    <!-- Manual Attendance Mode -->
+    @if (attendanceMode() === 'manual') {
       <div class="two-column-layout">
-        <!-- Left Column: Student List -->
         <div class="students-column">
-        <div class="section-card">
-          <div class="section-header">
-            <lucide-icon [img]="Users" [size]="20" class="section-icon"></lucide-icon>
-            <h3>Enrolled Students ({{enrolledStudents().length}})</h3>
-          </div>
-          
-          @if (enrolledStudents().length > 0) {
-            <div class="students-list">
-              @for (student of enrolledStudents(); track student.student_id) {
-                <div class="student-item">
-                  <div class="student-info">
-                    <p class="student-name">{{student.full_name}}</p>
-                    <p class="student-details">ID: {{student.student_id}} • Grade {{student.grade_level}} - {{student.section}}</p>
+          <div class="section-card">
+            <div class="section-header">
+              <lucide-icon [img]="Users" [size]="20" class="section-icon"></lucide-icon>
+              <h3>Enrolled Students ({{enrolledStudents().length}})</h3>
+            </div>
+            @if (enrolledStudents().length > 0) {
+              <div class="students-list">
+                @for (student of enrolledStudents(); track student.student_id) {
+                  <div class="student-item">
+                    <div class="student-info">
+                      <p class="student-name">{{student.full_name}}</p>
+                      <p class="student-details">ID: {{student.student_id}} • Grade {{student.grade_level}} - {{student.section}}</p>
+                    </div>
+                    <div class="student-action">
+                      @if (isMarkedToday(student.student_id)) {
+                        <span class="marked-badge">
+                          <lucide-icon [img]="CheckCircle2" [size]="16" class="badge-icon"></lucide-icon>
+                          Marked
+                        </span>
+                      } @else {
+                        <select (change)="markAttendance(student.student_id, $event)" class="status-select">
+                          <option value="">Mark...</option>
+                          <option value="Present">Present</option>
+                          <option value="Late">Late</option>
+                          <option value="Absent">Absent</option>
+                          <option value="Excused">Excused</option>
+                        </select>
+                      }
+                    </div>
                   </div>
-                  <div class="student-action">
-                    @if (isMarkedToday(student.student_id)) {
-                      <span class="marked-badge">
-                        <lucide-icon [img]="CheckCircle2" [size]="16" class="badge-icon"></lucide-icon>
-                        Marked
-                      </span>
-                    } @else {
-                      <select (change)="markAttendance(student.student_id, $event)" class="status-select">
-                        <option value="">Mark...</option>
-                        <option value="Present">Present</option>
-                        <option value="Late">Late</option>
-                        <option value="Absent">Absent</option>
-                        <option value="Excused">Excused</option>
-                      </select>
-                    }
-                  </div>
-                </div>
-              }
-            </div>
-          } @else {
-            <div class="empty-state">
-              <div class="empty-icon">
-                <lucide-icon [img]="Users" [size]="48"></lucide-icon>
+                }
               </div>
-              <p class="empty-title">No students enrolled</p>
-              <p class="empty-text">Add students to this subject to take attendance</p>
-            </div>
-          }
-        </div>
-      </div>
-
-      <!-- Right Column: QR Scanner -->
-      <div class="scanner-column">
-        <div class="section-card">
-          <div class="section-header">
-            <lucide-icon [img]="QrCode" [size]="20" class="section-icon"></lucide-icon>
-            <h3>Scan QR Code</h3>
+            } @else {
+              <div class="empty-state">
+                <div class="empty-icon"><lucide-icon [img]="Users" [size]="48"></lucide-icon></div>
+                <p class="empty-title">No students enrolled</p>
+                <p class="empty-text">Add students to this subject to take attendance</p>
+              </div>
+            }
           </div>
-          
-          @if (!scannerActive()) {
-            <button (click)="startScanner()" class="start-camera-btn">
-              <lucide-icon [img]="Camera" [size]="20" class="btn-icon"></lucide-icon>
-              Start Camera
-            </button>
-          } @else {
-            <div class="scanner-active">
-              <div class="camera-view">
-                <div class="camera-placeholder">
-                  <lucide-icon [img]="Camera" [size]="48" class="camera-icon"></lucide-icon>
-                  <p class="camera-status">Camera Active</p>
-                  <p class="camera-hint">Position QR code in frame</p>
-                </div>
-                <div class="camera-frame"></div>
-              </div>
-              
-              <div class="manual-input">
-                <input 
-                  type="text" 
-                  [(ngModel)]="manualStudentId" 
-                  placeholder="Or enter Student ID manually"
-                  class="manual-input-field"
-                />
-                <button (click)="markAttendanceManual()" class="mark-present-btn">
-                  Mark Present
-                </button>
-              </div>
-              
-              <button (click)="stopScanner()" class="stop-camera-btn">
-                Stop Camera
-              </button>
-            </div>
-          }
         </div>
-      </div>
+        <div class="scanner-column">
+          <div class="section-card">
+            <div class="section-header">
+              <lucide-icon [img]="QrCode" [size]="20" class="section-icon"></lucide-icon>
+              <h3>Manual ID Entry</h3>
+            </div>
+            <div class="manual-input">
+              <input type="text" [(ngModel)]="manualStudentId" placeholder="Enter Student ID" class="manual-input-field"/>
+              <button (click)="markAttendanceManual()" class="mark-present-btn">Mark Present</button>
+            </div>
+          </div>
+        </div>
       </div>
     }
 
-    <!-- QR Code Generator Mode (Instructor Only) -->
-    @if (attendanceMode() === 'qr-generate' && canTakeAttendance()) {
-      <app-qr-code-generator></app-qr-code-generator>
-    }
-
-    <!-- QR Code Monitoring Mode (Instructor) -->
-    @if (attendanceMode() === 'qr-scan' && canTakeAttendance()) {
-      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-        <h3 class="text-lg font-bold text-slate-800 mb-4">Real-time Scan Monitoring</h3>
-        <p class="text-slate-600 mb-4">Waiting for students to scan the QR code...</p>
-        <app-qr-code-generator></app-qr-code-generator>
-      </div>
+    <!-- QR Code Generator Mode -->
+    @if (attendanceMode() === 'qr-generate') {
+      <app-qr-code-generator [subjectId]="selectedSubjectId"></app-qr-code-generator>
     }
   }
+
+  } <!-- end @else (instructor) -->
 
   <!-- Toast Message -->
   @if (message()) {
