@@ -11,6 +11,17 @@ export class DataService {
   private apiUrl = this.getApiUrl();
   
   private getApiUrl(): string {
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      const protocol = window.location.protocol;
+      
+      // If accessing from mobile or different IP on same network
+      if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+        return `${protocol}//${hostname}:3000`;
+      }
+    }
+    
+    // Default: localhost
     return 'http://localhost:3000';
   }
 
