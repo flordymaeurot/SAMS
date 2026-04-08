@@ -29,7 +29,8 @@ server.use('/api', router);
 server.use(router);
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`JSON Server is running on port ${PORT}`);
-  console.log(`API available at http://localhost:${PORT}/api`);
+  console.log(`API available at http://0.0.0.0:${PORT}`);
+  console.log(`Listening on all interfaces (0.0.0.0:${PORT})`);
 });
