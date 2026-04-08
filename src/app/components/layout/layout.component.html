@@ -1,28 +1,36 @@
 <div class="flex h-screen bg-slate-50">
+  <!-- Mobile Overlay -->
+  @if (sidebarOpen() && isMobile()) {
+    <div class="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden" (click)="closeMobileSidebar()"></div>
+  }
+
   <!-- Sidebar -->
-  <aside [class]="sidebarCollapsed() ? 'w-20' : 'w-64'" 
-         class="fixed h-full bg-slate-800 text-white transition-all duration-300 ease-in-out flex flex-col z-20">
+  <aside [class]="(sidebarCollapsed() && !isMobile()) ? 'w-20' : (isMobile() && !sidebarOpen()) ? '-translate-x-full' : 'w-64'" 
+         class="fixed md:relative h-full bg-slate-800 text-white transition-all duration-300 ease-in-out flex flex-col z-20">
     <div class="h-16 flex items-center justify-between px-4 border-b border-slate-700">
-      @if (!sidebarCollapsed()) {
+      @if (!sidebarCollapsed() && !isMobile()) {
         <h1 class="text-xl font-bold bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">Attendance</h1>
       }
       <button (click)="toggleSidebar()" class="p-2 hover:bg-slate-700 rounded-lg transition-colors">
-        @if (sidebarCollapsed()) {
+        @if (sidebarCollapsed() && !isMobile()) {
           <lucide-icon [img]="ChevronRight" [size]="24"></lucide-icon>
-        } @else {
+        } @else if (!isMobile()) {
           <lucide-icon [img]="ChevronLeft" [size]="24"></lucide-icon>
+        } @else {
+          <lucide-icon [img]="X" [size]="24"></lucide-icon>
         }
       </button>
     </div>
     
-    <nav class="flex-1 py-4 px-2 space-y-1">
+    <nav class="flex-1 py-4 px-2 space-y-1 overflow-y-auto">
       @for (item of menuItems(); track item.path) {
         <a [routerLink]="item.path" 
+           (click)="closeMobileSidebar()"
            routerLinkActive="bg-gradient-to-r from-amber-600 to-orange-600 text-white"
            [routerLinkActiveOptions]="{exact: false}"
            class="flex items-center px-3 py-3 text-slate-300 hover:bg-slate-700 hover:text-white rounded-lg transition-all duration-200">
           <lucide-icon [img]="getIconComponent(item.icon)" [size]="20"></lucide-icon>
-          @if (!sidebarCollapsed()) {
+          @if (!sidebarCollapsed() || isMobile()) {
             <span class="ml-3 font-medium">{{item.label}}</span>
           }
         </a>
@@ -31,9 +39,9 @@
     
     <!-- User Info at Bottom -->
     <div class="border-t border-slate-700 p-4">
-      @if (!sidebarCollapsed()) {
+      @if (!sidebarCollapsed() || isMobile()) {
         <div class="flex items-center gap-3 mb-3">
-          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-semibold">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-semibold flex-shrink-0">
             {{getUserInitials()}}
           </div>
           <div class="flex-1 min-w-0">
@@ -43,10 +51,10 @@
         </div>
       }
       <button (click)="logout()" 
-              [class]="sidebarCollapsed() ? 'w-full p-2' : 'w-full px-4 py-2'"
+              [class]="(sidebarCollapsed() && !isMobile()) ? 'w-full p-2' : 'w-full px-4 py-2'"
               class="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors">
         <lucide-icon [img]="LogOut" [size]="20"></lucide-icon>
-        @if (!sidebarCollapsed()) {
+        @if (!sidebarCollapsed() || isMobile()) {
           <span class="text-sm font-medium">Logout</span>
         }
       </button>
@@ -54,14 +62,18 @@
   </aside>
 
   <!-- Main Content -->
-  <div [class]="sidebarCollapsed() ? 'ml-20' : 'ml-64'" 
-       class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out">
+  <div class="flex-1 flex flex-col overflow-hidden w-full transition-all duration-300 ease-in-out">
     <!-- Header -->
-    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10 shadow-sm">
-      <div class="flex items-center gap-4">
-        <h2 class="text-2xl font-bold text-slate-800">{{getPageTitle()}}</h2>
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10 shadow-sm">
+      <div class="flex items-center gap-2 md:gap-4">
+        @if (isMobile()) {
+          <button (click)="toggleSidebar()" class="p-2 hover:bg-slate-100 rounded-lg transition-colors md:hidden">
+            <lucide-icon [img]="Menu" [size]="24"></lucide-icon>
+          </button>
+        }
+        <h2 class="text-lg md:text-2xl font-bold text-slate-800">{{getPageTitle()}}</h2>
         @if (currentUser()?.role === 'parent') {
-          <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+          <span class="px-2 md:px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs md:text-sm font-medium">
             Parent View
           </span>
         }
@@ -71,7 +83,7 @@
     </header>
 
     <!-- Page Content -->
-    <main class="flex-1 overflow-auto p-6 bg-slate-50">
+    <main class="flex-1 overflow-auto p-4 md:p-6 bg-slate-50">
       <router-outlet></router-outlet>
     </main>
   </div>

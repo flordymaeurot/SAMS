@@ -4,15 +4,10 @@ node_modules
 .env
 .env.local
 *.log
-dist
 coverage
 .angular
 .DS_Store
-src
-tsconfig*.json
-angular.json
 README.md
 .editorconfig
 .gitkeep
 start-dev.bat
-db.json

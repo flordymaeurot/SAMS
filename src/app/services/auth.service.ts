@@ -12,8 +12,25 @@ export class AuthService {
   private platformId = inject(PLATFORM_ID);
   private http = inject(HttpClient);
   private isBrowser = isPlatformBrowser(this.platformId);
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = this.getApiUrl();
   currentUser = signal<User | null>(null);
+  
+  private getApiUrl(): string {
+    // Determine API URL based on environment
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      const protocol = window.location.protocol;
+      
+      // Mobile on same local network
+      if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+        return `${protocol}//${hostname}:3000`;
+      }
+    }
+    
+    // Default: use localhost (works for dev and local mobile testing)
+    // For production on Vercel, deploy json-server to Render and update this URL
+    return 'http://localhost:3000';
+  }
   
   constructor(private router: Router) {
     this.loadUser();

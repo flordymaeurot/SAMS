@@ -5,6 +5,13 @@
 /* Global styles */
 body {
   @apply bg-slate-50 text-slate-900;
+  font-size: 16px; /* Prevents zoom on iOS input focus */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  @apply scroll-smooth;
 }
 
 /* Animations */
@@ -40,9 +47,13 @@ body {
 
 /* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
-  .animate-fade-in,
-  .animate-slide-up {
-    animation: none;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
@@ -69,3 +80,130 @@ body {
   @apply w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin;
 }
 
+/* Mobile-first responsive utilities */
+@media (max-width: 640px) {
+  /* Reduce padding and margins on very small screens */
+  :root {
+    --spacing-unit: 0.25rem;
+  }
+
+  /* Ensure touch targets are at least 44px for accessibility */
+  button,
+  a[role="button"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Optimize form inputs for mobile */
+  input,
+  textarea,
+  select {
+    font-size: 16px !important; /* Prevents auto-zoom on focus */
+  }
+
+  /* Better mobile card layout */
+  .card, 
+  [class*="card"] {
+    @apply rounded-lg p-4;
+  }
+
+  /* Optimize table display on mobile */
+  table {
+    font-size: 0.875rem;
+  }
+
+  table th,
+  table td {
+    @apply px-2 py-2;
+  }
+}
+
+/* Tablet optimization */
+@media (min-width: 641px) and (max-width: 1024px) {
+  body {
+    font-size: 15px;
+  }
+
+  button,
+  a[role="button"] {
+    min-height: 40px;
+  }
+}
+
+/* Desktop optimization */
+@media (min-width: 1025px) {
+  body {
+    font-size: 16px;
+  }
+
+  button,
+  a[role="button"] {
+    min-height: 36px;
+  }
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  body {
+    /* Compensate for address bar */
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"],
+  input[type="month"],
+  input[type="week"] {
+    font-size: 16px;
+  }
+}
+
+/* Improve link tap area on mobile */
+a {
+  @apply relative inline-block;
+  -webkit-tap-highlight-color: rgba(245, 158, 11, 0.2);
+}
+
+a::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+}
+
+/* Ensure images are responsive */
+img {
+  @apply max-w-full h-auto;
+}
+
+/* Better focus visible on mobile */
+:focus-visible {
+  @apply outline-2 outline-orange-500 outline-offset-2;
+}
+
+/* Smooth transitions */
+* {
+  @apply transition-colors duration-200;
+}
+
+/* Prevent text selection on buttons */
+button,
+[role="button"] {
+  @apply select-none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Better container queries for responsive components */
+@supports (container-type: inline-size) {
+  .responsive-container {
+    container-type: inline-size;
+  }
+}
