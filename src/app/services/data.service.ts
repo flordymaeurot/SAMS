@@ -11,19 +11,15 @@ export class DataService {
   private apiUrl = this.getApiUrl();
   
   private getApiUrl(): string {
-    // Determine API URL based on environment
+    // Production: Use Render backend
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
-      const protocol = window.location.protocol;
-      
-      // Mobile on same local network
-      if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-        return `${protocol}//${hostname}:3000`;
+      if (hostname.includes('vercel.app')) {
+        return 'https://sams-backend.onrender.com';
       }
     }
     
-    // Default: use localhost (works for dev and local mobile testing)
-    // For production on Vercel, deploy json-server to Render and update this URL
+    // Development: use localhost
     return 'http://localhost:3000';
   }
 
