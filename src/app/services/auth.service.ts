@@ -16,15 +16,6 @@ export class AuthService {
   currentUser = signal<User | null>(null);
   
   private getApiUrl(): string {
-    // Production: Use Render backend
-    if (typeof window !== 'undefined') {
-      const hostname = window.location.hostname;
-      if (hostname.includes('vercel.app')) {
-        return 'https://sams-backend.onrender.com';
-      }
-    }
-    
-    // Development: use localhost
     return 'http://localhost:3000';
   }
   
