@@ -16,19 +16,13 @@ export class AuthService {
   currentUser = signal<User | null>(null);
   
   private getApiUrl(): string {
-    // Determine API URL based on environment
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
       const protocol = window.location.protocol;
-      
-      // Mobile on same local network
       if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
         return `${protocol}//${hostname}:3000`;
       }
     }
-    
-    // Default: use localhost (works for dev and local mobile testing)
-    // For production on Vercel, deploy json-server to Render and update this URL
     return 'http://localhost:3000';
   }
   
