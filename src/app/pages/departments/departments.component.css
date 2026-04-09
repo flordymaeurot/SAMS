@@ -480,6 +480,10 @@
 }
 
 @media (max-width: 768px) {
+  .departments-container {
+    padding: 1rem;
+  }
+
   .departments-grid {
     grid-template-columns: 1fr;
   }
@@ -488,22 +492,166 @@
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
-    padding: 1.5rem;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .header p {
+    font-size: 0.875rem;
   }
   
   .btn-add {
     width: 100%;
     justify-content: center;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
   }
   
   .department-card {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .department-info h3 {
+    font-size: 1.125rem;
+  }
+
+  .created-date {
+    font-size: 0.75rem;
   }
   
   .department-actions {
     width: 100%;
     justify-content: flex-end;
+  }
+
+  .modal-overlay {
+    padding: 1rem;
+  }
+
+  .modal-content {
+    max-width: 95vw;
+  }
+
+  .modal-header {
+    padding: 1.25rem;
+  }
+
+  .modal-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+  }
+
+  .modal-actions {
+    padding: 1.25rem 1.5rem;
+    gap: 0.75rem;
+  }
+
+  .btn-cancel,
+  .btn-save {
+    flex: 1;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .btn-cancel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form-group input {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .departments-container {
+    padding: 0.75rem;
+  }
+
+  .header {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .header h1 {
+    font-size: 1.25rem;
+  }
+
+  .header p {
+    font-size: 0.75rem;
+  }
+
+  .btn-add {
+    padding: 0.625rem 1rem;
+    font-size: 0.75rem;
+  }
+
+  .department-card {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .department-info h3 {
+    font-size: 1rem;
+  }
+
+  .department-info h3::before {
+    font-size: 1.25rem;
+  }
+
+  .created-date {
+    font-size: 0.7rem;
+  }
+
+  .created-date::before {
+    font-size: 0.65rem;
+  }
+
+  .btn-icon {
+    padding: 0.5rem;
+  }
+
+  .modal-header h2 {
+    font-size: 1.125rem;
+  }
+
+  .modal-body {
+    padding: 1.25rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 0.5rem;
+  }
+
+  .btn-cancel,
+  .btn-save {
+    width: 100%;
+  }
+
+  .form-group {
+    gap: 0.5rem;
+  }
+
+  .form-group label {
+    font-size: 0.8rem;
+  }
+
+  .form-group input {
+    padding: 0.625rem;
+    font-size: 16px;
   }
 }

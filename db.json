@@ -22,6 +22,29 @@
       "full_name": "Jhyle Tagapulot",
       "created_at": "2026-04-06T07:16:01.858Z",
       "id": 2
+    },
+    {
+      "user_id": "U17756820333627961",
+      "email": "flordymae@student.com",
+      "password": "student123",
+      "role": "student",
+      "first_name": "flordymae",
+      "last_name": "Urot",
+      "full_name": "flordymae Urot",
+      "created_at": "2026-04-08T21:00:33.362Z",
+      "id": 3
+    },
+    {
+      "user_id": "U17756820334411896",
+      "email": "maria@parent.com",
+      "password": "parent123",
+      "role": "parent",
+      "first_name": "maria",
+      "last_name": "leonore",
+      "full_name": "maria f leonore",
+      "created_at": "2026-04-08T21:00:33.441Z",
+      "middle_name": "f",
+      "id": 4
     }
   ],
   "instructors": [
@@ -38,16 +61,36 @@
       "id": 1
     }
   ],
-  "students": [],
-  "parents": [],
-  "subjects": [],
-  "enrollments": [],
-  "attendance": [],
-  "departments": [
+  "students": [
     {
-      "name": "Ethics",
-      "created_at": "2026-04-06T07:15:39.917Z",
+      "student_id": "3034915",
+      "first_name": "flordymae",
+      "last_name": "Urot",
+      "full_name": "flordymae Urot",
+      "email": "flordymae@student.com",
+      "grade_level": "2ndyr",
+      "section": "Section A",
+      "qr_code_data": "STUDENT-3034915",
+      "instructor_id": "INST-001",
+      "user_id": "U17756820333627961",
+      "created_at": "2026-04-08T21:00:33.420Z",
       "id": 1
     }
-  ]
+  ],
+  "parents": [],
+  "subjects": [
+    {
+      "subject_id": "SUB1775657344599",
+      "subject_name": "math",
+      "subject_code": "math110",
+      "instructor_id": "INST-001",
+      "grade_level": "12",
+      "section": "BSIT2A",
+      "schedule": "Mon-Fri",
+      "id": 1
+    }
+  ],
+  "enrollments": [],
+  "attendance": [],
+  "departments": []
 }

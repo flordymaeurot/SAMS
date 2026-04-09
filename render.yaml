@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: sams-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run json-server
+    envVars:
+      - key: PORT
+        value: 3000

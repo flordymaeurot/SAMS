@@ -11,11 +11,19 @@ export class DataService {
   private apiUrl = this.getApiUrl();
   
   private getApiUrl(): string {
-    // Check if we're in production/Vercel environment
-    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-      // Use environment variable or construct from current domain
-      return `${window.location.protocol}//${window.location.hostname}:3000`;
+    // Determine API URL based on environment
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      const protocol = window.location.protocol;
+      
+      // Mobile on same local network
+      if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+        return `${protocol}//${hostname}:3000`;
+      }
     }
+    
+    // Default: use localhost (works for dev and local mobile testing)
+    // For production on Vercel, deploy json-server to Render and update this URL
     return 'http://localhost:3000';
   }
 
@@ -360,7 +368,11 @@ export class DataService {
   async loadDepartments() {
     try {
       const departments = await firstValueFrom(this.http.get<Department[]>(`${this.apiUrl}/departments`));
-      this.departments.set(departments);
+      // Remove duplicates by id to ensure no duplicate departments
+      const uniqueDepartments = departments.filter((dept, index, self) =>
+        self.findIndex(d => d.id === dept.id) === index
+      );
+      this.departments.set(uniqueDepartments);
     } catch (error) {
       console.error('Error loading departments:', error);
     }
@@ -371,7 +383,11 @@ export class DataService {
   async addDepartment(department: Department) {
     try {
       const newDepartment = await firstValueFrom(this.http.post<Department>(`${this.apiUrl}/departments`, department));
-      this.departments.update(d => [...d, newDepartment]);
+      // Only add if not already in the list
+      this.departments.update(d => {
+        const isDuplicate = d.some(dept => dept.id === newDepartment.id);
+        return isDuplicate ? d : [...d, newDepartment];
+      });
       return newDepartment;
     } catch (error) {
       console.error('Error adding department:', error);

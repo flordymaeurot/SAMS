@@ -1,9 +1,9 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { filter } from 'rxjs/operators';
-import { LucideAngularModule, LayoutDashboard, BookOpen, ClipboardList, BarChart3, UserPlus, Settings, LogOut, ChevronLeft, ChevronRight, Users, Building2 } from 'lucide-angular';
+import { LucideAngularModule, LayoutDashboard, BookOpen, ClipboardList, BarChart3, UserPlus, Settings, LogOut, ChevronLeft, ChevronRight, Users, Building2, Menu, X } from 'lucide-angular';
 
 @Component({
   selector: 'app-layout',
@@ -28,8 +28,12 @@ export class LayoutComponent {
   readonly LogOut = LogOut;
   readonly ChevronLeft = ChevronLeft;
   readonly ChevronRight = ChevronRight;
+  readonly Menu = Menu;
+  readonly X = X;
   
   sidebarCollapsed = signal(false);
+  sidebarOpen = signal(false);
+  isMobile = signal(false);
   currentUser = this.authService.currentUser;
 
   constructor() {
@@ -37,12 +41,35 @@ export class LayoutComponent {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
-      // Page title will be derived from route
+      // Close mobile sidebar on navigation
+      this.sidebarOpen.set(false);
     });
+    
+    // Check if mobile on init
+    this.checkMobileSize();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    this.checkMobileSize();
+  }
+
+  private checkMobileSize(): void {
+    this.isMobile.set(window.innerWidth < 768);
   }
 
   toggleSidebar() {
-    this.sidebarCollapsed.update(v => !v);
+    if (this.isMobile()) {
+      this.sidebarOpen.update(v => !v);
+    } else {
+      this.sidebarCollapsed.update(v => !v);
+    }
+  }
+
+  closeMobileSidebar(): void {
+    if (this.isMobile()) {
+      this.sidebarOpen.set(false);
+    }
   }
 
   getUserInitials(): string {
@@ -76,10 +103,8 @@ export class LayoutComponent {
       { path: '/dashboard', label: 'Dashboard', icon: 'LayoutDashboard', roles: ['admin', 'instructor', 'student', 'parent'] },
       { path: '/accounts', label: 'Accounts', icon: 'Users', roles: ['admin'] },
       { path: '/departments', label: 'Departments', icon: 'Building2', roles: ['admin'] },
-      { path: '/departments', label: 'Departments', icon: 'Building2', roles: ['admin'] },
       { path: '/subjects', label: role === 'student' ? 'My Subjects' : 'Subjects', icon: 'BookOpen', roles: ['instructor', 'student'] },
-      { path: '/take-attendance', label: 'Take Attendance', icon: 'ClipboardList', roles: ['instructor'] },
-      { path: '/take-attendance', label: 'Scan QR', icon: 'ClipboardList', roles: ['student'] },
+      { path: '/take-attendance', label: role === 'student' ? 'Scan QR' : 'Take Attendance', icon: 'ClipboardList', roles: ['instructor', 'student'] },
       { path: '/attendance-records', label: role === 'parent' ? "My Child's Records" : 'Attendance Records', icon: 'ClipboardList', roles: ['admin', 'instructor', 'student', 'parent'] },
       { path: '/create-account', label: 'Create Account', icon: 'UserPlus', roles: ['admin', 'instructor'] },
       { path: '/reports', label: 'Reports', icon: 'BarChart3', roles: ['admin', 'instructor'] },
