@@ -1,0 +1,136 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "user_id": "1",
+      "email": "admin@school.com",
+      "password": "admin123",
+      "role": "admin",
+      "first_name": "System",
+      "middle_name": "",
+      "last_name": "Administrator",
+      "full_name": "System Administrator",
+      "created_at": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "user_id": "U17757500619505577",
+      "email": "jhyletagapulot@edu.com",
+      "password": "instructor123",
+      "role": "instructor",
+      "first_name": "Jhyle",
+      "last_name": "Tagapulot",
+      "full_name": "Jhyle Tagapulot",
+      "created_at": "2026-04-09T15:54:21.950Z",
+      "id": 2
+    },
+    {
+      "user_id": "U17758225504255477",
+      "email": "sparyani@edu.com",
+      "password": "gwapoko123",
+      "role": "student",
+      "first_name": "Sandeep",
+      "last_name": "Paryani",
+      "full_name": "Sandeep Paryani",
+      "created_at": "2026-04-10T12:02:30.425Z",
+      "id": 3
+    },
+    {
+      "user_id": "U17758225506595633",
+      "email": "cherryrosed@email.com",
+      "password": "parent123",
+      "role": "parent",
+      "first_name": "Cherry Rose",
+      "last_name": "Dalapag",
+      "full_name": "Cherry Rose Dalapag",
+      "created_at": "2026-04-10T12:02:30.659Z",
+      "id": 4
+    }
+  ],
+  "instructors": [
+    {
+      "instructor_id": "INST-001",
+      "first_name": "Jhyle",
+      "last_name": "Tagapulot",
+      "full_name": "Jhyle Tagapulot",
+      "email": "jhyletagapulot@edu.com",
+      "phone": "1122334455",
+      "department": "Ethics",
+      "user_id": "U17757500619505577",
+      "created_at": "2026-04-09T15:54:21.983Z",
+      "id": 1
+    }
+  ],
+  "students": [
+    {
+      "student_id": "STU-001",
+      "first_name": "Sandeep",
+      "last_name": "Paryani",
+      "full_name": "Sandeep Paryani",
+      "email": "sparyani@edu.com",
+      "grade_level": "Grade 12",
+      "section": "A",
+      "qr_code_data": "STUDENT-STU-001",
+      "instructor_id": "ADMIN-CREATED",
+      "user_id": "U17758225504255477",
+      "created_at": "2026-04-10T12:02:30.631Z",
+      "id": 1
+    }
+  ],
+  "parents": [
+    {
+      "parent_id": "P1775822550424",
+      "first_name": "Cherry Rose",
+      "last_name": "Dalapag",
+      "full_name": "Cherry Rose Dalapag",
+      "email": "cherryrosed@email.com",
+      "phone": "11225544",
+      "student_id": "STU-001",
+      "user_id": "U17758225506595633",
+      "created_at": "2026-04-10T12:02:30.690Z",
+      "id": 1
+    }
+  ],
+  "subjects": [
+    {
+      "subject_id": "SUB1775822584405",
+      "subject_name": "Web System and Technologies",
+      "subject_code": "WST",
+      "instructor_id": "INST-001",
+      "grade_level": "Grade 12",
+      "section": "A",
+      "schedule": "Wed/Sat - 6PM/7AM",
+      "id": 1
+    }
+  ],
+  "enrollments": [
+    {
+      "enrollment_id": "E1775822588675",
+      "subject_id": "SUB1775822584405",
+      "student_id": "STU-001",
+      "enrolled_date": "2026-04-10T12:03:08.675Z",
+      "id": 1
+    }
+  ],
+  "attendance": [
+    {
+      "attendance_id": "ATT1775823466350",
+      "student_id": "STU-001",
+      "student_name": "Sandeep Paryani",
+      "instructor_id": "INST-001",
+      "subject_id": "SUB1775822584405",
+      "subject_name": "Web System and Technologies",
+      "date": "2026-04-10T12:17:46.350Z",
+      "time": "8:17:46 PM",
+      "status": "Present",
+      "method": "QR",
+      "id": 1
+    }
+  ],
+  "departments": [
+    {
+      "name": "Ethics",
+      "created_at": "2026-04-09T15:53:57.239Z",
+      "id": 1
+    }
+  ]
+}

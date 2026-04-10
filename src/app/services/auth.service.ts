@@ -20,7 +20,8 @@ export class AuthService {
       const hostname = window.location.hostname;
       const protocol = window.location.protocol;
       if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-        return `${protocol}//${hostname}:3000`;
+        // Production: use relative API path for Vercel
+        return '';
       }
     }
     return 'http://localhost:3000';
@@ -32,8 +33,9 @@ export class AuthService {
 
   async login(email: string, password: string): Promise<boolean> {
     try {
-      // Fetch all users from JSON server
-      const users = await firstValueFrom(this.http.get<User[]>(`${this.apiUrl}/users`));
+      // Fetch all users from JSON server or API
+      const endpoint = this.apiUrl ? `${this.apiUrl}/users` : '/api/users';
+      const users = await firstValueFrom(this.http.get<User[]>(endpoint));
       
       // Find user with matching email and password
       const user = users.find(u => u.email === email && u.password === password);
