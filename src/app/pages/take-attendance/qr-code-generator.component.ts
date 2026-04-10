@@ -57,7 +57,7 @@ import Swal from 'sweetalert2';
                 <button (click)="copyQRToClipboard()" class="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-3 py-1.5 text-sm font-medium transition-colors">
                   <lucide-icon [img]="Copy" [size]="14"></lucide-icon> Copy
                 </button>
-                <button (click)="regenerateQR()" class="flex items-center gap-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg px-3 py-1.5 text-sm font-medium transition-colors">
+                <button (click)="regenerateQR()" class="flex items-center gap-1 btn-primary-solid rounded-lg px-3 py-1.5 text-sm font-medium">
                   <lucide-icon [img]="QrCodeIcon" [size]="14"></lucide-icon> Regenerate
                 </button>
                 <button (click)="stopSession()" class="flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white rounded-lg px-3 py-1.5 text-sm font-medium transition-colors">
@@ -71,7 +71,7 @@ import Swal from 'sweetalert2';
             </div>
           } @else {
             <button (click)="generateQRCode()" [disabled]="generatingQR()"
-              class="w-full bg-amber-600 hover:bg-amber-700 disabled:bg-amber-400 text-white rounded-lg px-6 py-3 font-medium transition-colors mt-auto">
+              class="w-full btn-primary rounded-lg px-6 py-3 font-medium mt-auto">
               {{ generatingQR() ? 'Generating...' : 'Generate QR Code' }}
             </button>
           }
@@ -198,7 +198,9 @@ export class QrCodeGeneratorComponent implements OnInit, OnDestroy {
 
       // @ts-ignore
       const QRCode = (await import('qrcode')).default;
-      const dataUrl = await QRCode.toDataURL(`ATTEND:${this.sessionId()}`, {
+      // QR data encodes subjectId and expiry timestamp so scanner can validate
+      const qrData = `ATTEND:${this.subjectId}:${expiryTime.getTime()}`;
+      const dataUrl = await QRCode.toDataURL(qrData, {
         width: 400, margin: 2,
         color: { dark: '#000000', light: '#FFFFFF' }
       });

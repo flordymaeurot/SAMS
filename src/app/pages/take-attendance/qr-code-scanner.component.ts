@@ -1,9 +1,9 @@
-import { Component, ViewChild, ElementRef, signal, inject, computed, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, ElementRef, signal, inject, computed, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
 import { AuthService } from '../../services/auth.service';
-import { LucideAngularModule, Camera, CheckCircle, AlertCircle, XCircle } from 'lucide-angular';
+import { LucideAngularModule, Camera, CheckCircle, AlertCircle, XCircle, Upload } from 'lucide-angular';
 import { BrowserQRCodeReader } from '@zxing/library';
 import Swal from 'sweetalert2';
 
@@ -29,9 +29,17 @@ interface ScanResult {
         </div>
 
         @if (!cameraStarted()) {
-          <button (click)="startCamera()" class="w-full bg-amber-600 hover:bg-amber-700 text-white rounded-lg px-6 py-4 font-medium transition-colors text-lg">
-            Start Camera & Scan QR Code
-          </button>
+          <div class="flex flex-col gap-3">
+            <button (click)="startCamera()" class="w-full btn-primary rounded-lg px-6 py-4 font-medium text-lg flex items-center justify-center gap-2">
+              <lucide-icon [img]="CameraIcon" [size]="20"></lucide-icon>
+              Start Camera & Scan QR Code
+            </button>
+            <label class="w-full flex items-center justify-center gap-2 border-2 border-dashed border-slate-300 hover:border-slate-400 text-slate-600 hover:text-slate-800 rounded-lg px-6 py-4 font-medium text-lg cursor-pointer transition-colors">
+              <lucide-icon [img]="UploadIcon" [size]="20"></lucide-icon>
+              Upload QR Code Image
+              <input type="file" accept="image/*" class="hidden" (change)="onFileUpload($event)">
+            </label>
+          </div>
         } @else {
           <div class="space-y-4">
             <!-- Camera Stream -->
@@ -112,11 +120,13 @@ export class QrCodeScannerComponent implements OnInit, OnDestroy {
 
   private dataService = inject(DataService);
   private authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
 
   readonly CameraIcon = Camera;
   readonly CheckIcon = CheckCircle;
   readonly AlertIcon = AlertCircle;
   readonly ErrorIcon = XCircle;
+  readonly UploadIcon = Upload;
 
   codeReader?: BrowserQRCodeReader;
   cameraStarted = signal(false);
@@ -155,53 +165,55 @@ export class QrCodeScannerComponent implements OnInit, OnDestroy {
 
   async startCamera() {
     try {
+      // Set flag first so Angular renders the <video> element
       this.cameraStarted.set(true);
       this.scanning.set(true);
+      // Wait for Angular to render the video element into the DOM
+      this.cdr.detectChanges();
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       if (!this.videoElement?.nativeElement || !this.codeReader) {
         throw new Error('Camera element not ready');
       }
 
-      // Try to get available video input devices
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const videoDevices = devices.filter(device => device.kind === 'videoinput');
-        
-        if (!videoDevices.length) {
-          throw new Error('No camera devices found');
-        }
+      // Request camera permission explicitly first
+      await navigator.mediaDevices.getUserMedia({ video: true });
 
-        // Start scanning
-        this.codeReader
-          .decodeFromVideoDevice(videoDevices[0].deviceId, this.videoElement.nativeElement, async (result, err) => {
-            if (result) {
-              this.scanning.set(false);
-              await this.processQRCode(result.getText());
-            }
-          })
-          .catch(err => {
-            console.error('Scanner error:', err);
+      this.codeReader
+        .decodeFromVideoDevice(null, this.videoElement.nativeElement, async (result, err) => {
+          if (result) {
             this.scanning.set(false);
-          });
-      } catch (deviceError) {
-        // Fallback: try without device ID
-        this.codeReader
-          .decodeFromVideoDevice(null, this.videoElement.nativeElement, async (result, err) => {
-            if (result) {
-              this.scanning.set(false);
-              await this.processQRCode(result.getText());
-            }
-          })
-          .catch(err => {
-            console.error('Scanner error:', err);
-            this.scanning.set(false);
-          });
-      }
-    } catch (error) {
+            await this.processQRCode(result.getText());
+          }
+        })
+        .catch(err => {
+          console.error('Scanner error:', err);
+          this.scanning.set(false);
+        });
+    } catch (error: any) {
       console.error('Camera error:', error);
-      await Swal.fire('Camera Error', 'Failed to start camera. Please check permissions.', 'error');
       this.cameraStarted.set(false);
+      this.scanning.set(false);
+      const msg = error?.name === 'NotAllowedError'
+        ? 'Camera permission denied. Please allow camera access in your browser settings.'
+        : 'Failed to start camera. Please check your device.';
+      await Swal.fire('Camera Error', msg, 'error');
     }
+  }
+
+  async onFileUpload(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    try {
+      const url = URL.createObjectURL(file);
+      const reader = new BrowserQRCodeReader();
+      const result = await reader.decodeFromImageUrl(url);
+      URL.revokeObjectURL(url);
+      await this.processQRCode(result.getText());
+    } catch {
+      await Swal.fire('Invalid Image', 'Could not find a valid QR code in the uploaded image.', 'error');
+    }
+    (event.target as HTMLInputElement).value = '';
   }
 
   stopCamera() {
@@ -222,40 +234,41 @@ export class QrCodeScannerComponent implements OnInit, OnDestroy {
   async processQRCode(qrData: string) {
     try {
       if (!qrData.startsWith('ATTEND:')) {
-        this.lastScan.set({
-          sessionId: qrData,
-          timestamp: new Date(),
-          status: 'error'
-        });
-        await Swal.fire('Invalid QR Code', 'This is not a valid attendance QR code', 'error');
+        this.lastScan.set({ sessionId: qrData, timestamp: new Date(), status: 'error' });
+        await Swal.fire('Invalid QR Code', 'This is not a valid attendance QR code.', 'error');
         return;
       }
 
-      const sessionId = qrData.replace('ATTEND:', '');
-      
+      // Format: ATTEND:<subjectId>:<expiryTimestamp>
+      const parts = qrData.replace('ATTEND:', '').split(':');
+      const subjectId = parts[0];
+      const expiryTs = parts[1] ? parseInt(parts[1]) : null;
+
+      // Check expiry
+      if (expiryTs && Date.now() > expiryTs) {
+        this.lastScan.set({ sessionId: qrData, timestamp: new Date(), status: 'error' });
+        await Swal.fire({
+          title: 'QR Code Expired',
+          text: 'This QR code has already expired. Please ask your instructor to generate a new one.',
+          icon: 'warning',
+          confirmButtonColor: '#f59e0b'
+        });
+        return;
+      }
+
+      const sessionId = qrData;
+
       // Check for duplicate scan
       if (this.scannedSessions().has(sessionId)) {
-        this.lastScan.set({
-          sessionId,
-          timestamp: new Date(),
-          status: 'duplicate'
-        });
+        this.lastScan.set({ sessionId, timestamp: new Date(), status: 'duplicate' });
         return;
       }
 
-      // Mark attendance
       const user = this.currentUser();
       const student = this.dataService.students().find(s => s.user_id === user?.user_id);
-      
       if (!student) throw new Error('Student not found');
 
-      // Extract subject_id from sessionId (format: ATT_<subjectId>_<timestamp>)
-      // timestamp is always the last underscore-separated segment
-      const withoutPrefix = sessionId.replace(/^ATT_/, '');
-      const lastUnderscoreIdx = withoutPrefix.lastIndexOf('_');
-      const subjectId = lastUnderscoreIdx !== -1 ? withoutPrefix.substring(0, lastUnderscoreIdx) : withoutPrefix;
       const subject = this.dataService.subjects().find(s => s.subject_id === subjectId);
-      
       if (!subject) throw new Error('Subject not found');
 
       const attendanceRecord = {
@@ -271,33 +284,20 @@ export class QrCodeScannerComponent implements OnInit, OnDestroy {
         method: 'QR' as const
       };
 
-      // Add to data service and backend
       await this.dataService.addAttendance(attendanceRecord);
-      
-      this.scannedSessions().add(sessionId);
-      this.lastScan.set({
-        sessionId,
-        timestamp: new Date(),
-        status: 'success'
-      });
 
-      // Notify parent and instructor
+      this.scannedSessions().add(sessionId);
+      this.lastScan.set({ sessionId, timestamp: new Date(), status: 'success' });
+
       await this.notifyParentAndInstructor(student, subjectId);
 
-      // Auto-resume scanning after 3 seconds
       setTimeout(() => {
-        if (this.cameraStarted()) {
-          this.scanning.set(true);
-        }
+        if (this.cameraStarted()) this.scanning.set(true);
       }, 3000);
 
     } catch (error) {
       console.error('QR processing error:', error);
-      this.lastScan.set({
-        sessionId: '',
-        timestamp: new Date(),
-        status: 'error'
-      });
+      this.lastScan.set({ sessionId: '', timestamp: new Date(), status: 'error' });
       await Swal.fire('Error', 'Failed to mark attendance. Please try again.', 'error');
     }
   }

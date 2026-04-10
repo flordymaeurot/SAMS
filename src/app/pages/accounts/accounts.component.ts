@@ -233,35 +233,36 @@ export class AccountsComponent {
       const userId = account.user_id;
       this.closeModal();
 
-      const deleteOps: Promise<any>[] = [];
-
       if (account.role === 'instructor') {
         const instructor = this.dataService.instructors().find(i => i.user_id === userId);
         if (instructor) {
           const subjects = this.dataService.subjects().filter(s => s.instructor_id === instructor.instructor_id);
           for (const subject of subjects) {
-            deleteOps.push(this.dataService.deleteSubject(subject.subject_id).catch(() => {}));
+            const enrollments = this.dataService.enrollments().filter(e => e.subject_id === subject.subject_id);
+            for (const enrollment of enrollments) {
+              await this.dataService.unenrollStudent(enrollment.enrollment_id).catch(() => {});
+            }
+            await this.dataService.deleteSubject(subject.subject_id).catch(() => {});
           }
-          deleteOps.push(this.dataService.deleteInstructor(instructor.instructor_id).catch(() => {}));
+          await this.dataService.deleteInstructor(instructor.instructor_id).catch(() => {});
         }
       } else if (account.role === 'student') {
         const student = this.dataService.students().find(s => s.user_id === userId);
         if (student) {
           const parent = this.dataService.parents().find(p => p.student_id === student.student_id);
           if (parent) {
-            deleteOps.push(this.dataService.deleteParent(parent.parent_id).catch(() => {}));
-            deleteOps.push(this.dataService.deleteUser(parent.user_id).catch(() => {}));
+            await this.dataService.deleteParent(parent.parent_id).catch(() => {});
+            await this.dataService.deleteUser(parent.user_id).catch(() => {});
           }
-          deleteOps.push(this.dataService.deleteStudent(student.student_id).catch(() => {}));
+          await this.dataService.deleteStudent(student.student_id).catch(() => {});
         }
       } else if (account.role === 'parent') {
         const parent = this.dataService.parents().find(p => p.user_id === userId);
         if (parent) {
-          deleteOps.push(this.dataService.deleteParent(parent.parent_id).catch(() => {}));
+          await this.dataService.deleteParent(parent.parent_id).catch(() => {});
         }
       }
 
-      if (deleteOps.length > 0) await Promise.all(deleteOps);
       await this.dataService.deleteUser(userId);
 
       await Swal.fire({ title: 'Deleted!', text: 'Account deleted successfully.', icon: 'success', timer: 1000, showConfirmButton: false });

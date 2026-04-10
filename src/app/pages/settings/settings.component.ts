@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/data.service';
+import { ThemeService, THEMES, Theme } from '../../services/theme.service';
 import { LucideAngularModule, Eye, EyeClosed } from 'lucide-angular';
 
 @Component({
@@ -15,6 +16,9 @@ import { LucideAngularModule, Eye, EyeClosed } from 'lucide-angular';
 export class SettingsComponent {
   private authService = inject(AuthService);
   private dataService = inject(DataService);
+  themeService = inject(ThemeService);
+
+  readonly themes = THEMES;
 
   profileForm: any = { email: '', name: '' };
   passwordForm: any = { current: '', new: '', confirm: '' };

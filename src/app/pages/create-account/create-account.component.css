@@ -1,4 +1,4 @@
-﻿.page-container {
+.page-container {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -134,7 +134,7 @@
 
 .tab-active {
   background: white;
-  color: #f97316;
+  color: var(--primary);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -185,3 +185,6 @@
     justify-content: center;
   }
 }
+
+
+

@@ -5,7 +5,7 @@
 /* Global styles */
 body {
   @apply bg-slate-50 text-slate-900;
-  font-size: 16px; /* Prevents zoom on iOS input focus */
+  font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -16,40 +16,21 @@ html {
 
 /* Animations */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
-
-.animate-slide-up {
-  animation: slideUp 0.3s ease-out;
-}
+.animate-fade-in  { animation: fadeIn  0.3s ease-out; }
+.animate-slide-up { animation: slideUp 0.3s ease-out; }
 
 /* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -57,153 +38,219 @@ html {
   }
 }
 
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
+/* Scrollbar */
+::-webkit-scrollbar       { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { @apply bg-slate-100; }
+::-webkit-scrollbar-thumb { @apply bg-slate-300 rounded-full; }
+::-webkit-scrollbar-thumb:hover { @apply bg-slate-400; }
 
-::-webkit-scrollbar-track {
-  @apply bg-slate-100;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-slate-300 rounded-full;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-400;
-}
-
-/* Loading Spinner */
+/* Spinner */
 .spinner {
-  @apply w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin;
+  @apply w-10 h-10 border-4 border-t-transparent rounded-full animate-spin;
+  border-color: var(--primary);
+  border-top-color: transparent;
 }
 
-/* Mobile-first responsive utilities */
-@media (max-width: 640px) {
-  /* Reduce padding and margins on very small screens */
-  :root {
-    --spacing-unit: 0.25rem;
-  }
-
-  /* Ensure touch targets are at least 44px for accessibility */
-  button,
-  a[role="button"],
-  input[type="button"],
-  input[type="submit"],
-  input[type="reset"] {
-    min-height: 44px;
-    min-width: 44px;
-  }
-
-  /* Optimize form inputs for mobile */
-  input,
-  textarea,
-  select {
-    font-size: 16px !important; /* Prevents auto-zoom on focus */
-  }
-
-  /* Better mobile card layout */
-  .card, 
-  [class*="card"] {
-    @apply rounded-lg p-4;
-  }
-
-  /* Optimize table display on mobile */
-  table {
-    font-size: 0.875rem;
-  }
-
-  table th,
-  table td {
-    @apply px-2 py-2;
-  }
-}
-
-/* Tablet optimization */
-@media (min-width: 641px) and (max-width: 1024px) {
-  body {
-    font-size: 15px;
-  }
-
-  button,
-  a[role="button"] {
-    min-height: 40px;
-  }
-}
-
-/* Desktop optimization */
-@media (min-width: 1025px) {
-  body {
-    font-size: 16px;
-  }
-
-  button,
-  a[role="button"] {
-    min-height: 36px;
-  }
-}
-
-/* iOS Safari specific fixes */
-@supports (-webkit-touch-callout: none) {
-  body {
-    /* Compensate for address bar */
-    min-height: 100vh;
-    min-height: 100dvh;
-  }
-
-  input[type="date"],
-  input[type="time"],
-  input[type="datetime-local"],
-  input[type="month"],
-  input[type="week"] {
-    font-size: 16px;
-  }
-}
-
-/* Improve link tap area on mobile */
-a {
-  @apply relative inline-block;
-  -webkit-tap-highlight-color: rgba(245, 158, 11, 0.2);
-}
-
-a::before {
-  content: '';
-  position: absolute;
-  top: -8px;
-  left: -8px;
-  right: -8px;
-  bottom: -8px;
-}
-
-/* Ensure images are responsive */
-img {
-  @apply max-w-full h-auto;
-}
-
-/* Better focus visible on mobile */
+/* Focus */
 :focus-visible {
-  @apply outline-2 outline-orange-500 outline-offset-2;
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
 /* Smooth transitions */
-* {
-  @apply transition-colors duration-200;
-}
+* { @apply transition-colors duration-200; }
 
-/* Prevent text selection on buttons */
-button,
-[role="button"] {
+/* No text selection on buttons */
+button, [role="button"] {
   @apply select-none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  user-select: none;
 }
 
-/* Better container queries for responsive components */
-@supports (container-type: inline-size) {
-  .responsive-container {
-    container-type: inline-size;
+/* Responsive */
+@media (max-width: 640px) {
+  :root { --spacing-unit: 0.25rem; }
+
+  button, a[role="button"],
+  input[type="button"], input[type="submit"], input[type="reset"] {
+    min-height: 44px;
+    min-width: 44px;
   }
+
+  input, textarea, select { font-size: 16px !important; }
+
+  .card, [class*="card"] { @apply rounded-lg p-4; }
+
+  table { font-size: 0.875rem; }
+  table th, table td { @apply px-2 py-2; }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  body { font-size: 15px; }
+  button, a[role="button"] { min-height: 40px; }
+}
+
+@media (min-width: 1025px) {
+  body { font-size: 16px; }
+  button, a[role="button"] { min-height: 36px; }
+}
+
+@supports (-webkit-touch-callout: none) {
+  body { min-height: 100vh; min-height: 100dvh; }
+  input[type="date"], input[type="time"],
+  input[type="datetime-local"], input[type="month"],
+  input[type="week"] { font-size: 16px; }
+}
+
+a {
+  @apply relative inline-block;
+  -webkit-tap-highlight-color: rgba(245,158,11,0.2);
+}
+a::before {
+  content: '';
+  position: absolute;
+  top: -8px; left: -8px; right: -8px; bottom: -8px;
+}
+
+img { @apply max-w-full h-auto; }
+
+@supports (container-type: inline-size) {
+  .responsive-container { container-type: inline-size; }
+}
+
+/* ===== THEME SYSTEM ===== */
+
+:root, [data-theme="amber"] {
+  --primary:             #f59e0b;
+  --primary-dark:        #d97706;
+  --primary-darker:      #b45309;
+  --primary-light:       #fef3c7;
+  --primary-ring:        rgba(245,158,11,0.3);
+  --accent:              #ea580c;
+  --accent-dark:         #c2410c;
+  --sidebar-bg:          #1e293b;
+  --sidebar-hover:       #334155;
+  --sidebar-active-from: #d97706;
+  --sidebar-active-to:   #c2410c;
+  --sidebar-text:        #cbd5e1;
+}
+
+[data-theme="ocean"] {
+  --primary:             #0ea5e9;
+  --primary-dark:        #0284c7;
+  --primary-darker:      #0369a1;
+  --primary-light:       #e0f2fe;
+  --primary-ring:        rgba(14,165,233,0.3);
+  --accent:              #6366f1;
+  --accent-dark:         #4f46e5;
+  --sidebar-bg:          #0f172a;
+  --sidebar-hover:       #1e3a5f;
+  --sidebar-active-from: #0284c7;
+  --sidebar-active-to:   #4f46e5;
+  --sidebar-text:        #bae6fd;
+}
+
+[data-theme="forest"] {
+  --primary:             #22c55e;
+  --primary-dark:        #16a34a;
+  --primary-darker:      #15803d;
+  --primary-light:       #dcfce7;
+  --primary-ring:        rgba(34,197,94,0.3);
+  --accent:              #84cc16;
+  --accent-dark:         #65a30d;
+  --sidebar-bg:          #14532d;
+  --sidebar-hover:       #166534;
+  --sidebar-active-from: #16a34a;
+  --sidebar-active-to:   #65a30d;
+  --sidebar-text:        #bbf7d0;
+}
+
+[data-theme="rose"] {
+  --primary:             #f43f5e;
+  --primary-dark:        #e11d48;
+  --primary-darker:      #be123c;
+  --primary-light:       #ffe4e6;
+  --primary-ring:        rgba(244,63,94,0.3);
+  --accent:              #ec4899;
+  --accent-dark:         #db2777;
+  --sidebar-bg:          #4c0519;
+  --sidebar-hover:       #881337;
+  --sidebar-active-from: #e11d48;
+  --sidebar-active-to:   #db2777;
+  --sidebar-text:        #fecdd3;
+}
+
+[data-theme="violet"] {
+  --primary:             #8b5cf6;
+  --primary-dark:        #7c3aed;
+  --primary-darker:      #6d28d9;
+  --primary-light:       #ede9fe;
+  --primary-ring:        rgba(139,92,246,0.3);
+  --accent:              #a855f7;
+  --accent-dark:         #9333ea;
+  --sidebar-bg:          #2e1065;
+  --sidebar-hover:       #4c1d95;
+  --sidebar-active-from: #7c3aed;
+  --sidebar-active-to:   #9333ea;
+  --sidebar-text:        #ddd6fe;
+}
+
+[data-theme="slate"] {
+  --primary:             #64748b;
+  --primary-dark:        #475569;
+  --primary-darker:      #334155;
+  --primary-light:       #f1f5f9;
+  --primary-ring:        rgba(100,116,139,0.3);
+  --accent:              #0f172a;
+  --accent-dark:         #020617;
+  --sidebar-bg:          #0f172a;
+  --sidebar-hover:       #1e293b;
+  --sidebar-active-from: #475569;
+  --sidebar-active-to:   #334155;
+  --sidebar-text:        #e2e8f0;
+}
+
+/* ===== THEMED CLASSES ===== */
+
+.themed-sidebar { background-color: var(--sidebar-bg) !important; }
+
+.btn-primary {
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(to right, var(--primary-dark), var(--accent-dark));
+  box-shadow: 0 4px 12px var(--primary-ring);
+}
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary-solid {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary-solid:hover:not(:disabled) { background-color: var(--primary-dark); }
+.btn-primary-solid:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.icon-primary {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+}
+
+.sidebar-link-active {
+  background: linear-gradient(to right, var(--sidebar-active-from), var(--sidebar-active-to)) !important;
+  color: white !important;
+}
+
+.focus-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--primary-ring);
+  border-color: var(--primary);
 }

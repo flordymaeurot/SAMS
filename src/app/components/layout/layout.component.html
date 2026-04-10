@@ -6,7 +6,7 @@
 
   <!-- Sidebar -->
   <aside [class]="(sidebarCollapsed() && !isMobile()) ? 'w-20' : (isMobile() && !sidebarOpen()) ? '-translate-x-full' : 'w-64'" 
-         class="fixed md:relative h-full bg-slate-800 text-white transition-all duration-300 ease-in-out flex flex-col z-20">
+         class="themed-sidebar fixed md:relative h-full text-white transition-all duration-300 ease-in-out flex flex-col z-20">
     <div class="h-16 flex items-center justify-between px-4 border-b border-slate-700">
       @if (!sidebarCollapsed() && !isMobile()) {
         <h1 class="text-xl font-bold bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">Attendance</h1>
@@ -26,7 +26,7 @@
       @for (item of menuItems(); track item.path) {
         <a [routerLink]="item.path" 
            (click)="closeMobileSidebar()"
-           routerLinkActive="bg-gradient-to-r from-amber-600 to-orange-600 text-white"
+           routerLinkActive="sidebar-link-active"
            [routerLinkActiveOptions]="{exact: false}"
            class="flex items-center px-3 py-3 text-slate-300 hover:bg-slate-700 hover:text-white rounded-lg transition-all duration-200">
           <lucide-icon [img]="getIconComponent(item.icon)" [size]="20"></lucide-icon>
@@ -41,7 +41,7 @@
     <div class="border-t border-slate-700 p-4">
       @if (!sidebarCollapsed() || isMobile()) {
         <div class="flex items-center gap-3 mb-3">
-          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-semibold flex-shrink-0">
+          <div class="w-10 h-10 rounded-full icon-primary flex items-center justify-center text-white font-semibold flex-shrink-0">
             {{getUserInitials()}}
           </div>
           <div class="flex-1 min-w-0">

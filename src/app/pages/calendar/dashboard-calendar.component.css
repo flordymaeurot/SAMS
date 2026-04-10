@@ -20,7 +20,7 @@
 }
 
 .fc-button {
-  background-color: #fbbf24 !important;
+  background-color: var(--primary) !important;
   border: none;
   color: #fff;
   border-radius: 0.25rem;
@@ -64,3 +64,6 @@
 .fc-daygrid-day-frame {
   min-height: auto !important;
 }
+
+
+

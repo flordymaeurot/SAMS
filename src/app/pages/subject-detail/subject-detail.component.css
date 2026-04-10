@@ -24,10 +24,10 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
-  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
   border-radius: 1rem;
   padding: 2rem;
-  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 10px 30px var(--primary-ring);
   position: relative;
   overflow: hidden;
 }
@@ -80,7 +80,7 @@
 .take-attendance-button {
   padding: 0.75rem 1.5rem;
   background: white;
-  color: #f59e0b;
+  color: var(--primary);
   border: none;
   border-radius: 0.75rem;
   font-weight: 600;
@@ -133,14 +133,14 @@
 }
 
 .tab-button:hover {
-  color: #f59e0b;
-  background: rgba(245, 158, 11, 0.1);
+  color: var(--primary);
+  background: rgba(var(--primary-ring), 0.1);
 }
 
 .tab-button.active {
   color: white;
-  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
-  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  box-shadow: 0 4px 15px var(--primary-ring);
 }
 
 .tab-icon-wrapper {
@@ -176,7 +176,7 @@
   content: '';
   width: 4px;
   height: 24px;
-  background: linear-gradient(to bottom, #f59e0b, #ea580c);
+  background: linear-gradient(to bottom, var(--primary), var(--accent));
   border-radius: 2px;
 }
 
@@ -202,15 +202,15 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background: linear-gradient(to bottom, #f59e0b, #ea580c);
+  background: linear-gradient(to bottom, var(--primary), var(--accent));
   transform: scaleY(0);
   transition: transform 0.3s ease;
 }
 
 .list-item:hover {
   transform: translateX(8px);
-  border-color: #f59e0b;
-  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 8px 25px var(--primary-ring);
   background: white;
 }
 
@@ -229,13 +229,13 @@
   content: '';
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 4px 15px var(--primary-ring);
 }
 
 .student-name {
@@ -273,7 +273,7 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
   color: white;
   border: none;
   border-radius: 0.75rem;
@@ -282,7 +282,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
-  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+  box-shadow: 0 4px 15px var(--primary-ring);
   position: relative;
   overflow: hidden;
 }
@@ -307,7 +307,7 @@
 
 .enroll-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(245, 158, 11, 0.5);
+  box-shadow: 0 6px 25px rgba(var(--primary-ring), 0.5);
 }
 
 .enroll-button:active {
@@ -386,7 +386,7 @@
 
 .bg-yellow-100 {
   background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+  box-shadow: 0 2px 8px rgba(var(--primary-ring), 0.2);
 }
 
 .text-yellow-800 {
@@ -499,7 +499,7 @@
   color: white;
   margin: 0;
   padding: 1.75rem;
-  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
   position: relative;
   overflow: hidden;
 }
@@ -542,16 +542,16 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background: linear-gradient(to bottom, #f59e0b, #ea580c);
+  background: linear-gradient(to bottom, var(--primary), var(--accent));
   transform: scaleY(0);
   transition: transform 0.3s ease;
 }
 
 .student-list-item:hover {
   background: white;
-  border-color: #f59e0b;
+  border-color: var(--primary);
   transform: translateX(4px);
-  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
+  box-shadow: 0 4px 15px var(--primary-ring);
 }
 
 .student-list-item:hover::before {
@@ -665,3 +665,6 @@
     transform: translateY(0);
   }
 }
+
+
+

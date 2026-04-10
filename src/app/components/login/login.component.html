@@ -1,7 +1,7 @@
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 p-3 md:p-4">
   <div class="bg-white rounded-xl md:rounded-2xl shadow-2xl p-6 md:p-8 w-full max-w-md animate-fade-in">
     <div class="text-center mb-6 md:mb-8">
-      <div class="w-12 md:w-16 h-12 md:h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg md:rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-4 shadow-lg">
+      <div class="w-12 md:w-16 h-12 md:h-16 icon-primary rounded-lg md:rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-4 shadow-lg">
         <lucide-icon [img]="CheckCircle2" [size]="32"></lucide-icon>
       </div>
       <h1 class="text-2xl md:text-3xl font-bold text-slate-800 mb-1 md:mb-2">WELCOME TO SAMS</h1>
@@ -46,7 +46,7 @@
 
       <button type="submit" 
               [disabled]="loading()"
-              class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white py-2 md:py-3 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm md:text-base">
+              class="w-full btn-primary py-2 md:py-3 rounded-lg font-medium shadow-sm flex items-center justify-center gap-2 text-sm md:text-base">
         @if (loading()) {
           <div class="w-4 md:w-5 h-4 md:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
           <span>Signing in...</span>
@@ -58,14 +58,7 @@
     </form>
 
     <div class="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-slate-200">
-      <p class="text-sm font-semibold text-slate-700 text-center mb-3">Master Admin Account</p>
-      <div class="space-y-2 text-sm">
-        <div class="flex items-center justify-between p-3 bg-orange-50 rounded-lg border border-orange-200">
-          <span class="font-medium text-orange-700">Admin</span>
-          <span class="text-orange-600">admin@school.com</span>
-        </div>
-      </div>
-      <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+      <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg">
         <p class="text-xs text-amber-800 text-center">
           <span class="font-semibold">Note:</span> Other accounts must be created by the admin.
           No demo accounts available.
@@ -74,3 +67,5 @@
     </div>
   </div>
 </div>
+
+

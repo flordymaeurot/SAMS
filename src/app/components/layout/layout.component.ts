@@ -2,6 +2,7 @@ import { Component, signal, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ThemeService } from '../../services/theme.service';
 import { filter } from 'rxjs/operators';
 import { LucideAngularModule, LayoutDashboard, BookOpen, ClipboardList, BarChart3, UserPlus, Settings, LogOut, ChevronLeft, ChevronRight, Users, Building2, Menu, X } from 'lucide-angular';
 
@@ -13,6 +14,7 @@ import { LucideAngularModule, LayoutDashboard, BookOpen, ClipboardList, BarChart
   styleUrls: ['./layout.component.css']
 })
 export class LayoutComponent {
+  private themeService = inject(ThemeService); // ensures theme is applied on load
   authService = inject(AuthService);
   router = inject(Router);
   

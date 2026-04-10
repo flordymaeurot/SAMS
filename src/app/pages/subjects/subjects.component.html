@@ -21,7 +21,7 @@
     </div>
     @if (canManage()) {
       <button (click)="showCreateModal.set(true)" 
-              class="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg px-6 py-3 font-medium transition-all duration-200 shadow-sm hover:shadow-md">
+              class="flex items-center gap-2 btn-primary rounded-lg px-6 py-3 font-medium shadow-sm">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
@@ -111,7 +111,7 @@
         </p>
         @if (canManage() && !searchTerm) {
           <button (click)="showCreateModal.set(true)"
-                  class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg px-6 py-3 font-medium transition-all duration-200">
+                  class="inline-flex items-center gap-2 btn-primary rounded-lg px-6 py-3 font-medium">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
@@ -188,7 +188,7 @@
         
         <div class="flex gap-3 mt-6">
           <button type="submit" 
-                  class="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg px-4 py-2 font-medium transition-all duration-200">
+                  class="flex-1 btn-primary rounded-lg px-4 py-2 font-medium">
             Create Subject
           </button>
           <button type="button" 
@@ -201,3 +201,4 @@
     </div>
   </div>
 }
+

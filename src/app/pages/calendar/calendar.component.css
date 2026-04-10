@@ -1,4 +1,4 @@
-﻿.calendar-layout {
+.calendar-layout {
   display: grid;
   grid-template-columns: 1fr 400px;
   gap: 1.5rem;
@@ -22,3 +22,6 @@
     max-height: none;
   }
 }
+
+
+
